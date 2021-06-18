@@ -17,7 +17,6 @@ This code builds heavily off of BrainPipe from Tom Pisano, Zahra Dahanderawala, 
 - BrainPipe
 - BrainGlobe
 
-
-
-#########################
-## Development Plan 
+# #######################
+## Development Plan
+1. Add code to recreate existiing figures -- as I add things, add any dependencies and make all paths relative

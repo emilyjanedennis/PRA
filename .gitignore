@@ -1,5 +1,6 @@
 # Slurm related
 logs*
+/logs*
 *.out
 *.err
 
