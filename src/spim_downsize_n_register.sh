@@ -9,7 +9,7 @@ echo "In the directory: `pwd` "
 echo "As the user: `whoami` "
 echo "on host: `hostname` "
 
-#specifications
+#specifications for spock
 cat /proc/$$/status | grep Cpus_allowed_list
 cat /proc/meminfo
 
