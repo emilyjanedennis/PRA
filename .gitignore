@@ -1,6 +1,6 @@
 # Slurm related
-logs*
-/logs*
+logs/*
+*/logs/*
 *.out
 *.err
 
