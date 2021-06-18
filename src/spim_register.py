@@ -8,13 +8,12 @@ Created on Tue Jul 21 16:01:17 2020
 
 import sys
 import os
-sys.path.append("../")
 import tifffile as tif
 import numpy as np
-from tools.registration.register import elastix_command_line_call
+from utils.registration import elastix_command_line_call
 
-param_fld = "/scratch/ejdennis/rat_registration_parameter_folder"  # change if using mouse
-atl = "/jukebox/brody/ejdennis/lightsheet/mPRA_adj.tif"  # defaults to pra
+param_fld = "../data/rat_registration_parameter_folder"  # change if using mouse
+atl = "../data/mPRA_adj.tif"  # defaults to pra
 
 
 # takes 6 command line arguments max
@@ -87,7 +86,7 @@ else:
     mv = atl
     fxtiff = tif.imread(fx)
     fxx,fxy,fxz     = np.shape(fxtiff)
-    if fxz > fxx: 
+    if fxz > fxx:
         tif.imsave(fx,np.swapaxes(fxtiff,0,2))
     print("\nPath to downsized vol for inverse registration to atlas: %s" % fx)
     print("\nPath to atlas: %s" % mv)
@@ -107,7 +106,7 @@ else:
         fxtiff = tif.imread(fx)
         fxx,fxy,fxz     = np.shape(fxtiff)
         if fxz > fxx:
-            tif.imsave(fx,np.swapaxes(fxtiff,0,2))        
+            tif.imsave(fx,np.swapaxes(fxtiff,0,2))
         out = os.path.join(src, "reg_to_cell")
         if not os.path.exists(out):
             os.mkdir(out)
