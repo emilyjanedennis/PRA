@@ -8,9 +8,9 @@ Created on Sat Nov 16 13:10:18 2019
 
 import os, tifffile, cv2, numpy as np, multiprocessing as mp, sys, shutil
 from scipy.ndimage import zoom
-sys.path.append("/jukebox/scratch/ejdennis/rat_BrainPipe")
-from tools.utils.io import load_kwargs
-from tools.imageprocessing.orientation import fix_orientation
+sys.path.append("../")
+from src.utils.io import load_kwargs
+from src.utils.imageprocessing import fix_orientation
 
 def downsize(pln, dst, final_res = 25, X_fullres_dim = 2160, Y_fullres_dim = 4018):
     """
