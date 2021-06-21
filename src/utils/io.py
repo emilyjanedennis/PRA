@@ -23,7 +23,6 @@ from subprocess import check_output
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from skimage.exposure import rescale_intensity
 from scipy.ndimage.interpolation import zoom
-from utils.parallelization import parallel_process
 
 
 def parallel_process(array, function, n_jobs=16, use_kwargs=False, front_num=3):

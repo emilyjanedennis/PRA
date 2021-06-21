@@ -17,7 +17,7 @@ import subprocess as sp
 from collections import Counter
 import tifffile
 from utils.imageprocessing import resample_par, color_movie_merger, resample
-from utils.imageprocessing import gridcompare, combine_images, depth
+from utils.imageprocessing import gridcompare, combine_images
 from utils.io import makedir, removedir, writer, load_kwargs, convert_to_mhd
 
 
