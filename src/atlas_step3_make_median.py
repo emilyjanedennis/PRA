@@ -8,7 +8,7 @@ Created on Sat Nov 16 13:49:34 2019
 
 import os, tifffile, cv2, numpy as np, multiprocessing as mp, sys, shutil, subprocess as sp
 from scipy.ndimage import zoom
-sys.path.append("/jukebox/scratch/ejdennis/rat_BrainPipe")
+sys.path.append("/..")
 from tools.imageprocessing.orientation import fix_orientation
 
 def listdirfull(x, keyword=False):
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     if not os.path.exists(data_fld): os.mkdir(data_fld)
 
     #registration to seed
-    parameterfld = "/scratch/ejdennis/rat_registration_parameter_folder" #start with basic affine/bspile
+    parameterfld = "../data/rat_registration_parameter_folder" #start with basic affine/bspile
     parameters = [os.path.join(parameterfld, xx) for xx in os.listdir(parameterfld)]
     #brain to register all other brains to
     seed = os.path.join(data_fld, "k320.tif")

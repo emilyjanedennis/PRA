@@ -8,7 +8,7 @@ Created on Sat Nov 16 13:49:34 2019
 
 import os, tifffile, cv2, numpy as np, multiprocessing as mp, sys, shutil, subprocess as sp
 from scipy.ndimage import zoom
-sys.path.append("/jukebox/scratch/ejdennis/rat_BrainPipe")
+sys.path.append("..")
 from tools.imageprocessing.orientation import fix_orientation
 
 def listdirfull(x, keyword=False):

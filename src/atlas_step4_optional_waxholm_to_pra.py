@@ -8,7 +8,7 @@ Created on Thu Dec 12 15:13:28 2019
 
 import os, tifffile as tif, sys
 from scipy.ndimage import zoom
-sys.path.append("/jukebox/wang/zahra/python/BrainPipe")
+sys.path.append(".."")
 from tools.registration.register import elastix_command_line_call
 
 mv = "/jukebox/LightSheetData/brodyatlas/atlas/for_registration_to_lightsheet/WHS_SD_rat_T2star_v1.01_atlas.tif"
