@@ -165,6 +165,25 @@ class volume:
     def add_ch_to_reg_to_atlas(self, loc):
         self.ch_to_reg_to_atlas = loc
 
+def reverse_axis(imstack, axes, verbose=False):
+    '''helper function to reverse axes. Assumes xyz convention rather than numpys zyx convention
+    
+    Inputs are strings rather than integers allows for handling of '-0'
+    '''
+    #ensure inputs:
+    assert type(axes) == tuple, 'axes must be a tuple of strings'
+    assert not any([True for xx in axes if type(xx) != str]), 'axes must be a tuple of strings'       #ensure all tuples entries are strings
+    
+    #check and reverse axis if negative. Remember that np's convention is z,y,x inputis x,y,z
+    for axis_to_reverse in axes:
+        if axis_to_reverse == '-0':
+            imstack = imstack[:,:,::-1]
+        elif axis_to_reverse == '-1':
+            imstack = imstack[:,::-1,...]
+        elif axis_to_reverse == '-2':
+            imstack = imstack[::-1,...]
+    
+    return imstack
 
 def regex_determiner(raw, dr):
     """helper function to determine appropriate regular expression
@@ -215,11 +234,11 @@ def fix_orientation(imstack, axes=None, verbose=False, **kwargs):
     #handle inputs
     if not axes:
         try:
+            print('printing axes = kwargs {}'.format(kwargs['finalorientation']))
             axes = kwargs['finalorientation']
         except KeyError:
             #reload param dictionary from original run_tracing file and update kwargs
-            import tools.utils.io as io
-            sys.path.append(kwargs['packagedirectory'])
+            import utils.io as io
             import run_tracing
             kwargs.update(run_tracing.params)
             io.save_kwargs(**kwargs)
