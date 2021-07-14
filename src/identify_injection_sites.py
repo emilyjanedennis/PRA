@@ -9,6 +9,7 @@ import numpy as np
 import tifffile as tif
 import SimpleITK as sitk
 import multiprocessing as mp
+import matplotlib.pyplot as plt
 from skimage.transform import resize
 sys.path.append("utils")
 from utils.registration import transformix_command_line_call
@@ -124,7 +125,7 @@ if __name__ == "__main__":
         print('saved tiff of inj in reg at {}'.format(dst))
         if os.path.exists(cell_filename):
        	    arr = get_inj_flexibly(cell_filename)
-            tif.imsave(cell_ing_filename,arr.swapaxes(0,2).astype('uint8'))
+            tif.imsave(cell_inj_filename,arr.swapaxes(0,2).astype('uint8'))
             print('saved tiff of inj in cell registered to reg at {}'.format(dst))
 
     if int(stepid)==1:
@@ -133,19 +134,23 @@ if __name__ == "__main__":
         
         # now take the transform files from reg -> atl
         transformfolder = os.path.join(elsrc,"reg_to_atl")
+        print("transformfolder is {}".format(transformfolder))
         transformfiles=[]
-        for file in transformfolder:
+        for file in os.listdir(transformfolder):
             if "TransformParam" in file:
                 transformfiles.append(os.path.join(transformfolder, file))
+        print("transformfiles {}".format(transformfiles))
 
         # now use transformix
-        if ~os.path.dir(reg_transformix_folder):
+        if not os.path.exists(reg_transformix_folder):
             os.mkdir(reg_transformix_folder)
-        transformix_command_line_call(reg_in_filename, reg_transformix_folder, transformfiles[-1])
+        transformix_command_line_call(reg_inj_filename, reg_transformix_folder, transformfiles[-1])
+        os.rename(os.path.join(reg_transformix_folder,"result.tif"),os.path.join(os.path.dirname(reg_inj_filename),"reg_inj_in_atl.tif"))
 
         if os.path.exists(cell_filename):
-            if ~os.path.dir(cell_transformix_folder):
+            if not os.path.exists(cell_transformix_folder):
                 os.mkdir(cell_transformix_folder)
-            transformix_command_line_call(cell_in_filename,cell_transformix_folder,transformfiles[-1])
+            transformix_command_line_call(cell_inj_filename,cell_transformix_folder,transformfiles[-1])
             #do for cell too
-    
+            # rename
+            os.rename(os.path.join(cell_transformix_folder,"result.tif"),os.path.join(os.path.dirname(cell_inj_filename),"cell_inj_in_atl.tif"))

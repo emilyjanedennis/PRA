@@ -1,11 +1,10 @@
 #!/bin/env bash
 #
-#SBATCH -c 11                      # number of cores
-#SBATCH -t 4                  # time (minutes)
-#SBATCH -o logs/id_inj_%j_%a.out        # STDOUT #add _%a to see each array job
-#SBATCH -e logs/id_inj_%j_%a.err        # STDERR #add _%a to see each array job
+#SBATCH -c 1                      # number of cores
+#SBATCH -t 5                  # time (minutes)
+#SBATCH -o logs/id_inj_%j.out        # STDOUT #add _%a to see each array job
+#SBATCH -e logs/id_inj_%j.err        # STDERR #add _%a to see each array job
 #SBATCH --contiguous #used to try and get cpu mem to be contigous
-#SBATCH --mem 120000 #120 gbs
 
 
 OUT0=$(sbatch --array=0 id_inj_make_volume.sh "$1" "$2")
