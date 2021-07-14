@@ -11,7 +11,7 @@ module load anacondapy/2020.11
 module load elastix/4.8
 . activate lightsheet
 
-python identify_injection_sites.py 1 $1 $2
+xvfb-run python identify_injection_sites.py 1 $1 $2
 
 # input 1: src which should have cell__ and reg__ volumes + an elastix folder
 # input 2: dst can be any folder
