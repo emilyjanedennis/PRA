@@ -34,7 +34,7 @@ for foldername in os.listdir(folder):
     # next, get all the inj_in_atl files
     for file in os.listdir(os.path.join(folder,foldername)):
         print(file)
-        if "inj_in_atl.tif" in file:
+        if "inj_in_atl.tif" in file and "MAX" not in file:
             print("using tif {}".format(os.path.join(folder,foldername,file)))
             thistif = tif.imread(os.path.join(folder,foldername,file))
 
