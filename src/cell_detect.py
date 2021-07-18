@@ -1,8 +1,7 @@
 import os,sys, pickle
 import numpy as np 
 #ClearMap path
-#sys.path.append('/usr/people/ejdennis/.local/bin')
-
+sys.path.append('/usr/people/ejdennis/.local/bin')
 sys.path.append('../ClearMap2')
 #load ClearMap modules
 #from ClearMap.Environment import *  #analysis:ignore
@@ -14,6 +13,7 @@ import ClearMap.ImageProcessing.Experts.Cells as cells
 import ClearMap.ParallelProcessing.BlockProcessing as bp
 import ClearMap.Alignment.Resampling as res
 
+print('done loading workspace')
 cell_detection_parameter = cells.default_cell_detection_parameter.copy()
 cell_detection_parameter['illumination'] = None
 cell_detection_parameter['maxima_detection']['valid']=True # keep this on if you want to combine results from multiple blocks
