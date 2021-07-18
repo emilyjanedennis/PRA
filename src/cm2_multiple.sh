@@ -6,7 +6,7 @@
 #SBATCH -o logs/clearmap2_%j.out        # STDOUT #add _%a to see each array job
 #SBATCH -e logs/clearmap2_%j.err        # STDERR #add _%a to see each array job
 
-
+cat /proc/$$/status | grep Cpus_allowed_list
 module load anacondapy/2020.11
 . activate cm2
 

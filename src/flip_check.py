@@ -17,7 +17,7 @@ import numpy as np
 
 print(sys.argv)
 
-listofdownsized = glob.glob(os.path.join(sys.argv[1],'**/*downsized_for_atlas.tif'),recursive=True)
+listofdownsized = glob.glob(os.path.join(sys.argv[1],'*/*/rawdata/*/*downsized_for_atlas.tif'))
 
 for filepath in listofdownsized:
 	print(filepath)
