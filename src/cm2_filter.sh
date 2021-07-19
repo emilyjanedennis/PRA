@@ -5,6 +5,7 @@
 #SBATCH -o logs/cm2_filter_%j.out        # STDOUT
 #SBATCH -e logs/cm2_filter_%j.err        # STDERR
 
+cat /proc/$$/status | grep Cpus_allowed_list
 module load anacondapy/2020.11
 module load elastix/4.8
 . activate cm2
