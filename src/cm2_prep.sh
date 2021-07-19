@@ -7,6 +7,8 @@
 #SBATCH --contiguous #used to try and get cpu mem to be contigous
 #SBATCH --mem 120000 #120 gbs
 
+
+cat /proc/$$/status | grep Cpus_allowed_list
 module load anacondapy/2020.11
 . activate cm2
 
