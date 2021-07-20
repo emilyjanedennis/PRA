@@ -117,8 +117,11 @@ if __name__ == '__main__':
 		for block_file_base in list_of_blocks:
 			block_file = os.path.join(directory,'final_blocks',block_file_base)
 			with open(block_file,'rb') as file_to_load:
-				block_result = pickle.load(file_to_load)
-				block_result_list.append(block_result)
+				try:
+					block_result = pickle.load(file_to_load)
+					block_result_list.append(block_result)
+				except:
+					print('could not load {}'.format(file_to_load))
 		final_results = np.vstack([np.hstack(r) for r in block_result_list]) # merges results into a single array
 		header = ['x','y','z'];
 		dtypes = [int, int, int];
