@@ -1,24 +1,261 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Aug 26 13:07:55 2016
 
-@author: wanglab
+@author: ejdennis with serious borrowing from wanglab
 """
 
-import os
-import sys
-import cv2
-import shutil
+import os, sys, csv, json, shutil, cv2, pickle
 import numpy as np
 import pandas as pd
 import SimpleITK as sitk
-import pickle
 import subprocess as sp
 from collections import Counter
-import tifffile
+import tifffile as tif
 from utils.imageprocessing import resample_par, color_movie_merger, resample
 from utils.imageprocessing import gridcompare, combine_images
 from utils.io import makedir, removedir, writer, load_kwargs, convert_to_mhd
+
+
+
+
+def points_resample(src, original_dims, resample_dims, verbose=False):
+    """Function to adjust points given resizing by generating a transform matrix
+
+    ***Assumes ZYX and that any orientation changes have already been done.***
+
+    src: numpy array or list of np arrays of dims nx3
+    original_dims (tuple)
+    resample_dims (tuple)
+    """
+    src = np.asarray(src)
+    assert src.shape[-1] == 3, "src must be a nx3 array"
+
+    # initialize
+    d1, d2 = src.shape
+    nx4centers = np.ones((d1, d2+1))
+    nx4centers[:, :-1] = src
+
+    # acount for resampling by creating transformmatrix
+    zr, yr, xr = resample_dims
+    z, y, x = original_dims
+
+    # apply scale diff
+    trnsfrmmatrix = np.identity(4)*(zr/float(z), yr/float(y), xr/float(x), 1)
+    if verbose:
+        sys.stdout.write("trnsfrmmatrix:\n{}\n".format(trnsfrmmatrix))
+
+    # nx4 * 4x4 to give transform
+    trnsfmdpnts = nx4centers.dot(trnsfrmmatrix)  # z,y,x
+    if verbose:
+        sys.stdout.write("first three transformed pnts:\n{}\n".format(trnsfmdpnts[0:3]))
+
+    return trnsfmdpnts
+
+
+
+def transform_points(src, dst, transformfiles, resample_points=False):
+    """
+
+    Inputs
+    ---------
+    src = numpy file consiting of nx3 (ZYX points)
+    dst = folder location to write points
+    transformfiles =
+        list of all elastix transform files used, and in order of the original transform****
+    resample_points = [original_dims, resample_dims] if there was resampling done, use this here
+    param_dictionary_for_reorientation = param_dictionary for lightsheet package to use for reorientation
+    """
+    # load
+    cells = np.load(src)
+    # optionally resample points
+    if resample_points:
+        original_dims, resample_dims = resample_points
+        cells = points_resample(cells, original_dims, resample_dims)
+
+    # generate text file
+    pretransform_text_file = create_text_file_for_elastix(cells, dst)
+
+    # copy over elastix files
+    transformfiles = modify_transform_files(transformfiles, dst)
+
+    # run transformix on points
+    points_file = point_transformix(pretransform_text_file, transformfiles[-1], dst)
+
+    # convert registered points into structure counts
+    unpack_pnts(points_file, dst)
+
+    return
+
+
+
+
+def create_text_file_for_elastix(src, dst):
+    """
+
+    Inputs
+    ---------
+    src = numpy file consiting of nx3 (ZYX points)
+    dst = folder location to write points
+    """
+
+    print("This function assumes ZYX centers...")
+
+    # setup folder
+    if not os.path.exists(dst):
+        os.mkdir(dst)
+
+    # create txt file, with elastix header, then populate points
+    pth = os.path.join(dst, "zyx_points_pretransform.txt")
+
+    # load
+    if type(src) == np.ndarray:
+        arr = src
+    else:
+        arr = np.load(src) if src[-3:] == "npy" else loadmat(src)["cell_centers_orig_coord"]
+
+    # convert
+    stringtowrite = "\n".join(["\n".join(["{} {} {}".format(i[0], i[1], i[2])])
+                               for i in arr])
+
+    # write file
+    sys.stdout.write("writing centers to transfomix input points text file...")
+    sys.stdout.flush()
+    with open(pth, "w+") as fl:
+        fl.write("index\n{}\n".format(len(arr)))
+        fl.write(stringtowrite)
+        fl.close()
+    sys.stdout.write("...done writing centers\n")
+    sys.stdout.flush()
+
+    return pth
+
+
+def modify_transform_files(transformfiles, dst):
+    """Function to copy over transform files, modify paths in case registration was done on the cluster, and tether them together
+
+        Inputs
+    ---------
+    transformfiles =
+        list of all elastix transform files used, and in order of the original transform****
+
+    """
+
+    # new
+    ntransformfiles = [os.path.join(dst, "order{}_{}".format(
+        i, os.path.basename(xx))) for i, xx in enumerate(transformfiles)]
+
+    # copy files over
+    [shutil.copy(xx, ntransformfiles[i]) for i, xx in enumerate(transformfiles)]
+
+    # modify each with the path
+    for i, pth in enumerate(ntransformfiles):
+
+        # skip first
+        if i != 0:
+
+            # read
+            with open(pth, "r") as fl:
+                lines = fl.readlines()
+                fl.close()
+
+            # copy
+            nlines = lines
+
+            # iterate
+            for ii, line in enumerate(lines):
+                if "(InitialTransformParametersFileName" in line:
+                    nlines[ii] = "(InitialTransformParametersFileName {})\n".format(
+                        ntransformfiles[i-1])
+
+            # write
+            with open(pth, "w") as fl:
+                for nline in lines:
+                    fl.write(str(nline))
+                fl.close()
+
+    return ntransformfiles
+
+
+def point_transformix(pretransform_text_file, transformfile, dst):
+    """apply elastix transform to points
+
+
+    Inputs
+    -------------
+    pretransform_text_file = list of points that already have resizing transform
+    transformfile = elastix transform file
+    dst = folder
+
+    Returns
+    ---------------
+    trnsfrm_out_file = pth to file containing post transformix points
+
+    """
+    sys.stdout.write("\n***********Starting Transformix***********")
+    from subprocess import check_output
+    # set paths
+    trnsfrm_out_file = os.path.join(dst, "outputpoints.txt")
+
+    # run transformix point transform
+    call = "transformix -def {} -out {} -tp {}".format(pretransform_text_file, dst, transformfile)
+    print(check_output(call, shell=True))
+    sys.stdout.write("\n   Transformix File Generated: {}".format(trnsfrm_out_file))
+    sys.stdout.flush()
+    return trnsfrm_out_file
+
+
+
+def get_transform_files_from_folder(transformfolder):
+    transformfiles=[]
+    for file in os.listdir(transformfolder):
+        if "TransformParam" in file:
+            print(file)
+            transformfiles.append(os.path.join(transformfolder,file))
+            transformfiles = transformfiles.sort()
+    return transformfiles
+
+
+
+def unpack_pnts(points_file, dst):
+    """
+    function to take elastix point transform file and return anatomical locations of those points
+
+    Here elastix uses the xyz convention rather than the zyx numpy convention
+
+    Inputs
+    -----------
+    points_file = post_transformed file, XYZ
+
+    Returns
+    -----------
+    dst_fl = path to numpy array, ZYX
+
+    """
+
+    # inputs
+    assert type(points_file) == str
+    point_or_index = 'OutputPoint'
+
+    # get points
+    with open(points_file, "r") as f:
+        lines = f.readlines()
+        f.close()
+
+    # populate post-transformed array of contour centers
+    sys.stdout.write("\n\n{} points detected\n\n".format(len(lines)))
+    arr = np.empty((len(lines), 3))
+    for i in range(len(lines)):
+        arr[i, ...] = lines[i].split()[lines[i].split().index(point_or_index) +
+                                       3:lines[i].split().index(point_or_index)+6]  # x,y,z
+
+    # optional save out of points
+    dst_fl = os.path.join(dst, "posttransformed_zyx_voxels.npy")
+    np.save(dst_fl, np.asarray([(z, y, x) for x, y, z in arr]))
+
+    # check to see if any points where found
+    print("output array shape {}".format(arr.shape))
+
+    return dst_fl
 
 
 def elastix_wrapper(jobid, cores=5, **kwargs):
@@ -98,7 +335,7 @@ def elastix_registration(jobid, cores=5, **kwargs):
         sys.stdout.flush()
         resample_par(cores, reg_vol.downsized_vol+'.tif', AtlasFile,
                      svlocname=reg_vol.resampled_for_elastix_vol,
-                     singletifffile=True, resamplefactor=1.3)
+                     singletifffile=True, resamplefactor=1.4)
         [vol.add_registration_volume(
             reg_vol.resampled_for_elastix_vol) for vol in vols]
         sys.stdout.write('...completed resizing\n')
@@ -133,25 +370,6 @@ def elastix_registration(jobid, cores=5, **kwargs):
     # ELASTIX
     e_out_file, transformfile = elastix_command_line_call(
         AtlasFile, reg_vol.resampled_for_elastix_vol, svlc, parameters)
-
-    # optionally generate MHD file for better scaling in elastix
-    if False and 'atlas_scale' in kwargs:
-        removedir(AtlasFile)
-        removedir(AtlasFile[-3:]+'.raw')
-        AtlasFile = atlasfilecopy
-        removedir(reg_vol.resampled_for_elastix_vol)
-        removedir(reg_vol.resampled_for_elastix_vol+'.raw')
-        reg_vol.add_resampled_for_elastix_vol(reg_volcopy)
-
-    # RG movie for visual inspection of image registration
-    color_movie_merger(AtlasFile, e_out_file, svlc, reg_vol.brainname)
-
-    # RGB movie with blue channel=pre-registered stack
-    bluechannel = os.path.join(svlc, 'combinedmovies', reg_vol.brainname+'_resized_bluechannel.tif')
-    # needs to be resample(not resample_par) as you need EXTACT dimensions
-    resample(reg_vol.downsized_vol+'.tif', AtlasFile, svlocname=bluechannel, singletifffile=True)
-    color_movie_merger(AtlasFile, e_out_file, svlc, reg_vol.brainname +
-                       '_bluechanneloriginal', movie5=bluechannel)
 
     # Make gridline transform file
     gridfld, tmpgridline = gridcompare(svlc, reg_vol)
@@ -665,83 +883,6 @@ def make_inverse_transform(vol_to_process, cores=5, **kwargs):
     # everything is in PIXELS
 
 
-def point_transform_due_to_resizing(array, chtype='injch', svlc=False, **kwargs):
-    '''Function to take npy array, find nonzero pixels, apply point transform (due to resizing) and package them into a file for final elastix point transform
-
-
-    Inputs
-    -------------
-    array = np array, tif, or path to numpy array from tools.objectdetection.injdetect.inj_detect_using_labels ZYX****
-    chtype = 'injch' or 'cellch'
-    svlc =
-        False: savesfile into (outdr, 'transformedpoints_pretransformix'). Strongly recommended to use this as it will then work with the rest of package
-        True
-
-    Returns
-    ---------------
-    txtflnm = pth to file containing transformed points BEFORE elastix transformation
-
-    NOTE THIS FUNCTION ASSUMES ARRAY AND ATLAS HAVE SAME Z,Y,X (DOES NOT TAKE INTO ACCOUNT SWAPPING OF AXES)
-    '''
-    if type(array) == str:
-        if array[-4:] == '.npy':
-            array = np.load(array)
-        if array[-4:] == '.tif':
-            array = tifffile.imread(array)
-
-    kwargs = load_kwargs(**kwargs)
-    outdr = kwargs['outputdirectory']
-    brainname = [xx for xx in kwargs['volumes'] if xx.ch_type == 'regch'][0].brainname
-    vol = [xx for xx in kwargs['volumes'] if xx.ch_type == chtype][0]
-
-    # array dimensions
-    z, y, x = array.shape
-
-    # compare size of array with 'resampledforelastixsize'
-    with tifffile.TiffFile([os.path.join(outdr, f) for f in os.listdir(outdr) if 'resampledforelastix.tif' in f and not '3D_contours' in f and 'ch{}'.format([xx.channel for xx in kwargs['volumes'] if xx.ch_type == 'regch'][0]) in f][0]) as tif:
-        zr = len(tif.pages)
-        yr, xr = tif.pages[0].shape
-        tif.close()
-
-    nonzeropixels = np.argwhere(array > 0)
-    nx4centers = np.ones((len(nonzeropixels), 4))  # FIXME: the logic needs to be checked
-    nx4centers[:, :-1] = nonzeropixels
-
-    # create transformmatrix
-    trnsfrmmatrix = np.identity(4)*(zr/z, yr/y, xr/x, 1)  # downscale to "resampledforelastix size"
-    sys.stdout.write('\n\n Transfrom matrix:\n{}\n'.format(trnsfrmmatrix))
-
-    # nx4 * 4x4 to give transform
-    trnsfmdpnts = nx4centers.dot(trnsfrmmatrix)  # z,y,x
-    sys.stdout.write('\nfirst three transformed pnts:\n{}\n'.format(trnsfmdpnts[0:3]))
-
-    # create txt file, with elastix header, then populate points
-    txtflnm = '{}_zyx_transformedpnts_{}.txt'.format(brainname, vol.ch_type)
-
-    #
-    if not svlc:
-        pnts_fld = os.path.join(outdr, 'transformedpoints_pretransformix')
-        makedir(pnts_fld)
-    if svlc:
-        pnts_fld = os.path.join(svlc)
-        makedir(pnts_fld)
-
-    transforminput = os.path.join(pnts_fld, txtflnm)
-    removedir(transforminput)  # prevent adding to an already made file
-    writer(pnts_fld, 'index\n{}\n'.format(len(trnsfmdpnts)), flnm=txtflnm)
-    sys.stdout.write('\nwriting centers to transfomix input points text file...')
-    stringtowrite = '\n'.join(['\n'.join(['{} {} {}'.format(i[2], i[1], i[0])])
-                               for i in trnsfmdpnts])  # this step converts from zyx to xyz*****
-    writer(pnts_fld, stringtowrite, flnm=txtflnm)
-    # [writer(pnts_fld, '{} {} {}\n'.format(i[2],i[1],i[0]), flnm=txtflnm, verbose=False) for i in trnsfmdpnts] ####this step converts from zyx to xyz*****
-    sys.stdout.write('...done writing centers.\nSaved in {}'.format(pnts_fld))
-    sys.stdout.flush()
-
-    del trnsfmdpnts, trnsfrmmatrix, nx4centers
-
-    return os.path.join(pnts_fld, txtflnm)
-
-
 def point_transformix(txtflnm, transformfile, dst=False):
     '''apply elastix transform to points
 
@@ -797,133 +938,3 @@ def collect_points_post_transformix(src, point_or_index='point'):
     return arr
 
 
-def transformed_pnts_to_allen(points_file, ch_type='injch', point_or_index=None, allen_id_table_pth=False, **kwargs):
-    '''function to take elastix point transform file and return anatomical locations of those points
-    point_or_index=None/point/index: determines which transformix output to use: point is more accurate, index is pixel value(?)
-    Elastix uses the xyz convention rather than the zyx numpy convention
-
-    Inputs
-    -----------
-    points_file =
-    ch_type = 'injch' or 'cellch'
-    allen_id_table_pth (optional) pth to allen_id_table
-
-    Returns
-    -----------
-    excelfl = path to excel file
-
-    '''
-    kwargs = load_kwargs(**kwargs)
-    # inputs
-    assert type(points_file) == str
-
-    if point_or_index == None:
-        point_or_index = 'OutputPoint'
-    elif point_or_index == 'point':
-        point_or_index = 'OutputPoint'
-    elif point_or_index == 'index':
-        point_or_index = 'OutputIndexFixed'
-
-    #
-    vols = kwargs['volumes']
-    reg_vol = [xx for xx in vols if xx.ch_type == 'regch'][0]
-
-    # load files
-    if not allen_id_table_pth:
-        # use for determining neuroanatomical locations according to allen
-        allen_id_table = pd.read_excel(os.path.join(
-            reg_vol.packagedirectory, 'supp_files/allen_id_table.xlsx'))
-    else:
-        allen_id_table = pd.read_excel(allen_id_table_pth)
-    ann = sitk.GetArrayFromImage(sitk.ReadImage(kwargs['annotationfile']))  # zyx
-    with open(points_file, "rb") as f:
-        lines = f.readlines()
-        f.close()
-
-    # populate post-transformed array of contour centers
-    sys.stdout.write('\n{} points detected\n\n'.format(len(lines)))
-    arr = np.empty((len(lines), 3))
-    for i in range(len(lines)):
-        arr[i, ...] = lines[i].split()[lines[i].split().index(point_or_index) +
-                                       3:lines[i].split().index(point_or_index)+6]  # x,y,z
-
-    # optional save out of points
-    np.save(kwargs['outputdirectory']+'/injection/zyx_voxels.npy',
-            np.asarray([(z, y, x) for x, y, z in arr]))
-
-    pnts = transformed_pnts_to_allen_helper_func(arr, ann)
-    pnt_lst = [xx for xx in pnts if xx != 0]
-
-    # check to see if any points where found
-    if len(pnt_lst) == 0:
-        raise ValueError('pnt_lst is empty')
-    else:
-        sys.stdout.write('\nlen of pnt_lst({})\n\n'.format(len(pnt_lst)))
-
-    # generate dataframe with column
-    df = count_structure_lister(allen_id_table, *pnt_lst)
-
-    # save df
-    nametosave = '{}_{}'.format(reg_vol.brainname, ch_type)
-    excelfl = os.path.join(kwargs['outputdirectory'], nametosave + '_stuctures_table.xlsx')
-    df.to_excel(excelfl)
-    print('\n\nfile saved as: {}'.format(excelfl))
-
-    return excelfl
-
-
-def transformed_pnts_to_allen_helper_func(arr, ann, order='XYZ'):
-    '''Function to transform given array of indices and return the atlas pixel ID from the annotation file
-
-    Input
-    --------------
-    numpy array of Nx3 dimensions corresponding to ***XYZ*** coordinates
-    ann = numpy array of annotation file
-    order = 'XYZ' or 'ZYX' representing the dimension order of arr's input
-
-    Returns
-    -------------
-    Pixel value at those indices of the annotation file
-    '''
-    # procecss
-    pnt_lst = []
-    badpntlst = []
-    for i in range(len(arr)):
-        try:
-            pnt = [int(x) for x in arr[i]]
-            if order == 'XYZ':
-                pnt_lst.append(ann[pnt[2], pnt[1], pnt[0]])  # find pixel id; arr=XYZ; ann=ZYX
-            elif order == 'ZYX':
-                pnt_lst.append(ann[pnt[0], pnt[1], pnt[2]])  # find pixel id; arr=ZYX; ann=ZYX
-        except IndexError:
-            badpntlst.append([pnt[2], pnt[1], pnt[0]])  # ZYX
-            pass  # THIS NEEDS TO BE CHECKED BUT I BELIEVE INDEXES WILL BE OUT OF
-    sys.stdout.write(
-        '\n*************{} points do not map to atlas*********\n'.format(len(badpntlst)))
-    sys.stdout.flush()
-    return pnt_lst
-
-
-def count_structure_lister(allen_id_table, *args):
-    '''Function that generates a pd table of structures where contour detection has been observed
-    Inputs:
-        allen_id_table=annotation file as np.array
-        *args=list of allen ID pixel values ZYX
-    '''
-    # make dictionary of pixel id:#num of the id
-    cnt = Counter()
-    for i in args:
-        cnt[i] += 1
-
-    # generate df + empty column
-    if type(allen_id_table) == str:
-        # df=allen_id_table.assign(count= [0]*len(allen_id_table)) #add count columns to df
-        allen_id_table = pd.read_excel(allen_id_table)
-    df = allen_id_table
-    df['cell_count'] = 0
-
-    # populate cell count in dataframe
-    for pix_id, count in cnt.items():
-        df.loc[df.id == pix_id, 'cell_count'] = count
-
-    return df
