@@ -17,6 +17,15 @@ from utils.io import makedir, removedir, writer, load_kwargs, convert_to_mhd
 
 
 
+def find_downsized_files(src):
+    if os.path.exists(os.path.join(src,'reg__downsized_for_atlas.tif')):
+        output_src = src
+    elif os.path.exists(os.path.join(os.path.dirname(src),'reg__downsized_for_atlas.tif')):
+        output_src = os.path.dirname(src)
+    else:
+        output_src = os.path.dirname(os.path.dirname(src))
+    return output_src
+
 
 def points_resample(src, original_dims, resample_dims, verbose=False):
     """Function to adjust points given resizing by generating a transform matrix

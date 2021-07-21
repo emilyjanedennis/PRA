@@ -25,6 +25,19 @@ from skimage.exposure import rescale_intensity
 from scipy.ndimage.interpolation import zoom
 
 
+def get_nested_tiffs(dir):
+	if len(glob.glob(os.path.join(dir,"*.tif*))) > 2:
+		tiff_dir = dir
+	elif len(glob.glob(os.path.join(dir,"*/*.tif*))) > 2:
+		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*.tif*))[0])
+	elif len(glob.glob(os.path.join(dir,"*/*/*.tif*))) > 2:
+		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*/*.tif*))[0])
+	else:
+		print('WARNING, tiffdir is empty, could not find nested dir in {}'.format(dir))
+		tiff_dir=[]
+	return tiff_dir
+
+
 def parallel_process(array, function, n_jobs=16, use_kwargs=False, front_num=3):
     """
         A parallel version of the map function with a progress bar.
