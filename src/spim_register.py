@@ -13,9 +13,9 @@ import tifffile as tif
 import numpy as np
 from utils.registration import elastix_command_line_call
 
-param_fld = os.path.join(os.path.dirname(os.getcwd(),"data/parameter_folder_a1b3"))  # change if using mouse
-param_fld_affine = os.path.join(os.path.dirname(os.getcwd(),"data/parameter_folder_a1b1"))
-atl = os.path.join(os.path.dirname(os.getcwd(),"mPRA.tif"))
+param_fld = os.path.join(os.path.dirname(os.getcwd()),"data/parameter_folder_a1b3")  # change if using mouse
+param_fld_affine = os.path.join(os.path.dirname(os.getcwd()),"data/parameter_folder_a1b1")
+atl = os.path.join(os.path.dirname(os.getcwd()),"mPRA.tif")
 print("atl is {}".format(atl))
 
 # takes 6 command line arguments max
