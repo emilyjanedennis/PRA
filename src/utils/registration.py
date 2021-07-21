@@ -16,7 +16,14 @@ from utils.imageprocessing import gridcompare, combine_images
 from utils.io import makedir, removedir, writer, load_kwargs, convert_to_mhd
 
 
-
+def find_downsized_files(src):
+    if os.path.exists(os.path.join(src,'reg__downsized_for_atlas.tif')):
+        output_src = src
+    elif os.path.exists(os.path.join(os.path.dirname(src),'reg__downsized_for_atlas.tif')):
+        output_src = os.path.dirname(src)
+    else:
+        output_src = os.path.dirname(os.path.dirname(src))
+    return output_src
 
 def points_resample(src, original_dims, resample_dims, verbose=False):
     """Function to adjust points given resizing by generating a transform matrix
@@ -209,7 +216,6 @@ def get_transform_files_from_folder(transformfolder):
     transformfiles=[]
     for file in os.listdir(transformfolder):
         if "TransformParam" in file:
-            print(file)
             transformfiles.append(os.path.join(transformfolder,file))
             transformfiles = transformfiles.sort()
     return transformfiles
@@ -936,5 +942,3 @@ def collect_points_post_transformix(src, point_or_index='point'):
             idx)+3:lines[i].split().index(idx)+6]  # x,y,z
 
     return arr
-
-
