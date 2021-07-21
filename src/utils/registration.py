@@ -85,6 +85,7 @@ def transform_points(src, dst, transformfiles, resample_points=False):
     pretransform_text_file = create_text_file_for_elastix(cells, dst)
 
     # copy over elastix files
+    print(transformfiles)
     transformfiles = modify_transform_files(transformfiles, dst)
 
     # run transformix on points
@@ -148,7 +149,7 @@ def modify_transform_files(transformfiles, dst):
         list of all elastix transform files used, and in order of the original transform****
 
     """
-
+    print("modifying transformfiles {} to {}".format(transformfiles, dst))
     # new
     ntransformfiles = [os.path.join(dst, "order{}_{}".format(
         i, os.path.basename(xx))) for i, xx in enumerate(transformfiles)]
@@ -216,14 +217,12 @@ def point_transformix(pretransform_text_file, transformfile, dst):
 
 def get_transform_files_from_folder(transformfolder):
     transformfiles=[]
+    print("in transformfolder {}".format(transformfolder))
     for file in os.listdir(transformfolder):
         if "TransformParam" in file:
-            print(file)
             transformfiles.append(os.path.join(transformfolder,file))
-            transformfiles = transformfiles.sort()
+    transformfiles.sort()
     return transformfiles
-
-
 
 def unpack_pnts(points_file, dst):
     """
