@@ -7,8 +7,8 @@
 #SBATCH --contiguous #used to try and get cpu mem to be contigous
 #SBATCH --mem 80000
 
-sbatch spim_register.sh 0 $1 $2 $3
-sbatch spim_register.sh 1 $1 $2 $3
+#sbatch spim_register.sh 0 $1 $2 $3
+#sbatch spim_register.sh 1 $1 $2 $3
 sbatch spim_register.sh 2 $1 $2 $3
 sbatch spim_register.sh 3 $1 $2 $3
 

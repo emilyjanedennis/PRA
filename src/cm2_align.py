@@ -64,11 +64,11 @@ if __name__ == "__main__":
 	except:
 		brainname = "brainname"
 
-    # get flip y? default off
+	# get flip y? default off
 	# sometimes the imaging center images with the cerebellum at the top and
 	# olfactory lobes at the bottom of the images, while our atlas is the opposite
 	try:
-		flip_y = int(sys.argv[6]
+		flip_y = int(sys.argv[6])
 	except:
 		flip_y = 0
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 	df = df.apply(pd.to_numeric,errors='coerce')
 	if switch_x_and_z:
 		df.columns = ['z','y','x','size','source','bkrd']
-	df_tosave = fulldf[['z','y','x']].to_numpy()
+	df_tosave = df[['z','y','x']].to_numpy()
 
 	# filename to save cells in proper format, later we'll save after flipping y if needed
 	df_tosave_filename = os.path.join(save_dir,'{}_cells.npy'.format(brainname))
@@ -98,6 +98,8 @@ if __name__ == "__main__":
 	if transform_type > 1:
 		# cells are in cell_ch
 		transform_folders = [os.path.join(elastix_dir,"reg_to_cell"),os.path.join(elastix_dir,"atl_to_reg")]
+		print(transform_folders)
+    
 		cell_file = os.path.join(dszd_folder,"cell__downsized_for_atlas.tif")
 		# get resampled dims
 		resampled_dims = np.shape(tif.imread(cell_file))
@@ -105,16 +107,20 @@ if __name__ == "__main__":
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_642_Em_2_corrected")
 	else:
 		# cells are in reg_ch
-		transform_folders = [os.path.join(elastix_dir,"atl_to_reg")]]
+    
+		transform_folders = [os.path.join(elastix_dir,"atl_to_reg")]
+		print(transform_folders)
 		reg_file = os.path.join(dszd_folder,"reg__downsized_for_atlas.tif")
-		reg_file_dims = np.shape(tif.imread(reg_file))
+		resampled_dims = np.shape(tif.imread(reg_file))
+    
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_488_Em_0_corrected")
 
 	# get original dims, reorient and flip y if needed
 	tiff_dir = get_nested_tiffs(full_size_dir)
 	list_of_files = glob.glob(os.path.join(tiff_dir,"*.tif*"))
 	z = len(list_of_files)
-	x,y = np.shape(tif.imread(list_of_files[int(z/2)])
+	x,y = np.shape(tif.imread(list_of_files[int(z/2)]))
+  
 	if switch_x_and_z:
 		original_dims = (x,y,z)
 	else:
@@ -124,7 +130,8 @@ if __name__ == "__main__":
 	np.save(df_tosave_filename,df_tosave)
 
 	# get transform files
-	transform_files = get_transform_files_from_folder(transform_folder[0])
+	transform_files = get_transform_files_from_folder(transform_folders[0])
+	
 	# run transformation
 	transform_points(df_tosave_filename,save_dir,transform_files, [(z,y,x),resampled_dims])
 
@@ -135,7 +142,7 @@ if __name__ == "__main__":
 		# rename cell in reg space
 		os.rename(os.path.join(save_dir,"posttransformed_zyx_voxels.npy"),new_df_tosave_filename)
 
-		transform_files = get_transform_files_from_folder(transform_folder[1])
+		transform_files = get_transform_files_from_folder(transform_folders[1])
 		transform_points(new_df_tosave_filename,save_dir,transform_files)
 
 		# prep to rename cell ch cells in atl space

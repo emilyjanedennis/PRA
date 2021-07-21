@@ -5,7 +5,7 @@ Created on Wed Jan  4 13:14:00 2017
 
 @author: wanglab
 """
-import filecmp
+import filecmp, glob
 import multiprocessing as mp
 import numpy as np
 import pickle
@@ -23,6 +23,19 @@ from subprocess import check_output
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from skimage.exposure import rescale_intensity
 from scipy.ndimage.interpolation import zoom
+
+
+def get_nested_tiffs(dir):
+	if len(glob.glob(os.path.join(dir,"*.tif*"))) > 2:
+		tiff_dir = dir
+	elif len(glob.glob(os.path.join(dir,"*/*.tif*"))) > 2:
+		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*.tif*"))[0])
+	elif len(glob.glob(os.path.join(dir,"*/*/*.tif*"))) > 2:
+		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*/*.tif*"))[0])
+	else:
+		print('WARNING, tiffdir is empty, could not find nested dir in {}'.format(dir))
+		tiff_dir=[]
+	return tiff_dir
 
 
 def parallel_process(array, function, n_jobs=16, use_kwargs=False, front_num=3):
