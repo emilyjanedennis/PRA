@@ -14,14 +14,14 @@ file takes 6 arguments
 6 - channel "cell" or "reg"
 """
 
-import os
-import sys
+import os, sys, glob, cv2
 import tifffile as tif
 import matplotlib.pyplot as plt
 import numpy as np
-import cv2
 import pandas as pd
 import matplotlib.colors
+import warnings
+warnings.filterwarnings("ignore")
 
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -30,6 +30,9 @@ from ClearMap.Environment import plt, reload, settings, io, wsp, tfs, p3d, col, 
 
 import ClearMap.IO.Workspace as wsp
 
+print("sys argvs are:")
+print(sys.argv)
+
 dir = sys.argv[1]
 brain = sys.argv[2]
 source = int(sys.argv[3])
@@ -37,12 +40,28 @@ size1 = int(sys.argv[4])
 size2 = int(sys.argv[5])
 channel = sys.argv[6]
 
-directory = os.path.join(dir, brain, channel)
+if "reg" in channel:
+	ch = glob.glob(os.path.join(dir,brain,"*488*"))[0].split('/')[-1]
+	print("reg channel is {}".format(ch))
+elif "cell" in channel:
+	ch = glob.glob(os.path.join(dir,brain,"*642*"))[0].split('/')[-1]
+	print("cell ch is {}".format(ch))
+else:
+	print("ERROR: unknown channel {}".format(channel))
+
+directory = os.path.join(dir, brain, ch)
 ws = wsp.Workspace('CellMap', directory=directory);
+
 thresholds = {
 	'source' : source,
 	'size'   : (size1,size2)
 	}
+
+print("PRINTING WS INFO")
+ws.info()
+
 cells.filter_cells(source = ws.filename('cells', postfix='raw'),
-	sink = ws.filename('cells', postfix='{}_{}_filtered'.format(brain,channel)),
+	sink = ws.filename('cells', postfix='filt'),
 	thresholds=thresholds);
+
+os.rename(os.path.join(directory,"cells_filt.npy"),os.path.join(directory,"{}_{}_filt.npy".format(brain,ch)))
