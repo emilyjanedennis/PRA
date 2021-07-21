@@ -99,6 +99,7 @@ if __name__ == "__main__":
 		# cells are in cell_ch
 		transform_folders = [os.path.join(elastix_dir,"reg_to_cell"),os.path.join(elastix_dir,"atl_to_reg")]
 		print(transform_folders)
+    
 		cell_file = os.path.join(dszd_folder,"cell__downsized_for_atlas.tif")
 		# get resampled dims
 		resampled_dims = np.shape(tif.imread(cell_file))
@@ -106,10 +107,12 @@ if __name__ == "__main__":
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_642_Em_2_corrected")
 	else:
 		# cells are in reg_ch
+    
 		transform_folders = [os.path.join(elastix_dir,"atl_to_reg")]
 		print(transform_folders)
 		reg_file = os.path.join(dszd_folder,"reg__downsized_for_atlas.tif")
 		resampled_dims = np.shape(tif.imread(reg_file))
+    
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_488_Em_0_corrected")
 
 	# get original dims, reorient and flip y if needed
@@ -117,6 +120,7 @@ if __name__ == "__main__":
 	list_of_files = glob.glob(os.path.join(tiff_dir,"*.tif*"))
 	z = len(list_of_files)
 	x,y = np.shape(tif.imread(list_of_files[int(z/2)]))
+  
 	if switch_x_and_z:
 		original_dims = (x,y,z)
 	else:
