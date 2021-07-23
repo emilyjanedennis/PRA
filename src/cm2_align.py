@@ -122,7 +122,8 @@ if __name__ == "__main__":
 	else:
 		original_dims = (z,y,x)
 	if flip_y:
-		df_tosave['y'] = -df_tosave['y'] + y
+		df['y'] = -df['y'] + y
+		df_tosave = df[['z','y','x']].to_numpy()
 	np.save(df_tosave_filename,df_tosave)
 
 	# get transform files
