@@ -27,6 +27,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 sys.path.append("../ClearMap2")
 from ClearMap.Environment import plt, reload, settings, io, wsp, tfs, p3d, col, te, tmr, bp, ap, ano, res, elx, st, stw, clp, rnk, se, dif, skl, skp, vf, me, mr, vox, cells
+#from ClearMap.Environment import cells, wsp
 
 import ClearMap.IO.Workspace as wsp
 
