@@ -27,7 +27,7 @@ def find_downsized_files(src):
     return output_src
 
 
-def points_resample(src, original_dims, resample_dims, verbose=False):
+def points_resample(src, original_dims, resample_dims, verbose=True):
     """Function to adjust points given resizing by generating a transform matrix
 
     ***Assumes ZYX and that any orientation changes have already been done.***
@@ -72,8 +72,8 @@ def transform_points(src, dst, transformfiles, resample_points=False):
     transformfiles =
         list of all elastix transform files used, and in order of the original transform****
     resample_points = [original_dims, resample_dims] if there was resampling done, use this here
-    param_dictionary_for_reorientation = param_dictionary for lightsheet package to use for reorientation
     """
+
     # load
     cells = np.load(src)
     # optionally resample points
@@ -81,7 +81,8 @@ def transform_points(src, dst, transformfiles, resample_points=False):
         original_dims, resample_dims = resample_points
         cells = points_resample(cells, original_dims, resample_dims)
 
-    # generate text file
+    # generate text file 
+    print("GENERATING {} switching zyx npy to xyz for transformix".format(dst))
     pretransform_text_file = create_text_file_for_elastix(cells, dst)
 
     # copy over elastix files
@@ -121,10 +122,10 @@ def create_text_file_for_elastix(src, dst):
     if type(src) == np.ndarray:
         arr = src
     else:
-        arr = np.load(src) if src[-3:] == "npy" else loadmat(src)["cell_centers_orig_coord"]
+        arr = np.load(src)
 
     # convert
-    stringtowrite = "\n".join(["\n".join(["{} {} {}".format(i[0], i[1], i[2])])
+    stringtowrite = "\n".join(["\n".join(["{} {} {}".format(i[2], i[1], i[0])])
                                for i in arr])
 
     # write file
