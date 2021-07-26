@@ -80,13 +80,13 @@ if __name__ == "__main__":
 		switch_x_and_z = True
 
 
-
 	# load cells, reorient axial -> sagittal if needed
 	df = pd.DataFrame(np.load(cells_filename))
 	df = df.apply(pd.to_numeric,errors='coerce')
 	if switch_x_and_z:
 		df.columns = ['z','y','x','size','source','bkrd']
 	df_tosave = df[['z','y','x']].to_numpy()
+	print("z max is {} y max is {} x max is {}".format(np.max(df['z']),np.max(df['y']),np.max(df['x'])))
 
 	# filename to save cells in proper format, later we'll save after flipping y if needed
 	df_tosave_filename = os.path.join(save_dir,'{}_cells.npy'.format(brainname))
@@ -98,7 +98,6 @@ if __name__ == "__main__":
 	if transform_type > 1:
 		# cells are in cell_ch
 		transform_folders = [os.path.join(elastix_dir,"reg_to_cell"),os.path.join(elastix_dir,"atl_to_reg")]
-		print(transform_folders)
 		cell_file = os.path.join(dszd_folder,"cell__downsized_for_atlas.tif")
 		# get resampled dims
 		resampled_dims = np.shape(tif.imread(cell_file))
@@ -107,7 +106,6 @@ if __name__ == "__main__":
 	else:
 		# cells are in reg_ch
 		transform_folders = [os.path.join(elastix_dir,"atl_to_reg")]
-		print(transform_folders)
 		reg_file = os.path.join(dszd_folder,"reg__downsized_for_atlas.tif")
 		resampled_dims = np.shape(tif.imread(reg_file))
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_488_Em_0_corrected")
@@ -115,36 +113,50 @@ if __name__ == "__main__":
 	# get original dims, reorient and flip y if needed
 	tiff_dir = get_nested_tiffs(full_size_dir)
 	list_of_files = glob.glob(os.path.join(tiff_dir,"*.tif*"))
+
 	z = len(list_of_files)
 	x,y = np.shape(tif.imread(list_of_files[int(z/2)]))
+	print("DIMENSIONS WERE (ZYX) {}".format((z,y,x)))
+
 	if switch_x_and_z:
 		original_dims = (x,y,z)
 	else:
 		original_dims = (z,y,x)
+
 	if flip_y:
 		df['y'] = -df['y'] + y
 		df_tosave = df[['z','y','x']].to_numpy()
 	np.save(df_tosave_filename,df_tosave)
 
+	print("DIMENSIONS AFTER FLIP, XY SWITCH (ZYX) ARE {}".format(original_dims))
+
 	# get transform files
 	transform_files = get_transform_files_from_folder(transform_folders[0])
-	
+	print("USING TRANSFORM FOLDER {}".format(transform_folders[0]))	
 	# run transformation
-	transform_points(df_tosave_filename,save_dir,transform_files, [(z,y,x),resampled_dims])
+	transform_points(df_tosave_filename,save_dir,transform_files, [original_dims,resampled_dims])
 
 	# rename based on which process and if cell file, do second transform
 	if transform_type > 1:
 		# rename
 		new_df_tosave_filename = os.path.join(save_dir,"{}_cell_in_reg_posttransform_zyx_voxels.npy".format(brainname))
-		# rename cell in reg space
 		os.rename(os.path.join(save_dir,"posttransformed_zyx_voxels.npy"),new_df_tosave_filename)
+		
+		# DEBUGGING
+		newdf = np.load(new_df_tosave_filename)
+		print("MAX REG IN CELL DIMS ARE: (z,y,x) {},{},{}".format(np.max(newdf[:,0]),np.max(newdf[:,1]),np.max(newdf[:,2])))		
+		print(" reg vol shape is {}".format(np.shape(tif.imread(os.path.join(dszd_folder,"reg__downsized_for_atlas.tif")))))
 
 		transform_files = get_transform_files_from_folder(transform_folders[1])
 		transform_points(new_df_tosave_filename,save_dir,transform_files)
 
 		# prep to rename cell ch cells in atl space
-		final_df_tosave_filename = os.path.join(save_dir,"{}_cell_transform_zyx_voxels.npy".format(brainname))
+		final_df_tosave_filename = os.path.join(save_dir,"{}_cell_in_atl_transform_zyx_voxels.npy".format(brainname))
 	else:
 		# prep to rename reg cells in atl space
-		new_df_tosave_filename = os.path.join(save_dir,"{}_reg_transform_zyx_voxels.npy".format(brainname))
-	os.rename(os.path.join(save_dir,"posttransformed_zyx_voxels.npy"),new_df_tosave_filename)
+		final_df_tosave_filename = os.path.join(save_dir,"{}_reg_in_atl_transform_zyx_voxels.npy".format(brainname))
+
+	os.rename(os.path.join(save_dir,"posttransformed_zyx_voxels.npy"),final_df_tosave_filename)
+	# DEBUGGING
+	newdf = np.load(final_df_tosave_filename)
+	print("MAX FINAL DIMS ARE: (z,y,x) {},{},{}".format(np.max(newdf[:,0]),np.max(newdf[:,1]),np.max(newdf[:,2])))

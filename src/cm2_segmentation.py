@@ -68,7 +68,7 @@ if __name__ == "__main__":
 			fails+=1
 	print("{} failed points outside volume space".format(fails))
 
-	tif.imsave(os.path.join(save_dir,"{}_{}_bool_cell_volume.tif".format(brain_name,ch)),bool_cell_vol)
+	tif.imsave(os.path.join(save_dir,"{}_{}_bool_cell_volume.tif".format(brain_name,ch)),bool_cell_vol.astype('uint8'))
 	df_to_save = pd.DataFrame(region_list)
 	df_to_save.to_csv(os.path.join(save_dir,"{}_{}_region_list.csv".format(brain_name,ch)))
 
