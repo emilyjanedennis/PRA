@@ -13,4 +13,4 @@ module load anacondapy/2020.11
 echo "rename slurm"
 echo "$1"
 echo "$2"
-xvfb-run python rename_smartspimZ_for_cm2.py $1 $2
+xvfb-run python spim_rename_for_cm2.py $1 $2
