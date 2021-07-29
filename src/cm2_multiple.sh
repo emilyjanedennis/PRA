@@ -23,9 +23,9 @@ do
     echo "$n"    
     echo "${LIST_OF_FOLDERS[n]}"
     echo "${LIST_OF_DESTINATIONS[n]}"
-    OUT0=$(sbatch --array=0 slurm_files/cm2_prep.sh "${LIST_OF_FOLDERS[n]}" "${LIST_OF_DESTINATIONS[n]}" "smartspim")
+    OUT0=$(sbatch --array=0 cm2_prep.sh "${LIST_OF_FOLDERS[n]}" "${LIST_OF_DESTINATIONS[n]}" "smartspim")
     echo "$OUT0"
-    sbatch --dependency=afterany:${OUT0##* } --array=0 slurm_files/cm2_process.sh "${LIST_OF_FOLDERS[n]}" "${LIST_OF_DESTINATIONS[n]}" "smartspim"
+    sbatch --dependency=afterany:${OUT0##* } --array=0 cm2_process.sh "${LIST_OF_FOLDERS[n]}" "${LIST_OF_DESTINATIONS[n]}" "smartspim"
 done
 
 
