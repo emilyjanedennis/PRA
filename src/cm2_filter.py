@@ -42,10 +42,10 @@ size2 = int(sys.argv[5])
 channel = sys.argv[6]
 
 if "reg" in channel:
-	ch = glob.glob(os.path.join(dir,brain,"*488*"))[0].split('/')[-1]
+	ch = glob.glob(os.path.join(dir,brain,"*488"))[0].split('/')[-1]
 	print("reg channel is {}".format(ch))
 elif "cell" in channel:
-	ch = glob.glob(os.path.join(dir,brain,"*642*"))[0].split('/')[-1]
+	ch = glob.glob(os.path.join(dir,brain,"*642"))[0].split('/')[-1]
 	print("cell ch is {}".format(ch))
 else:
 	print("ERROR: unknown channel {}".format(channel))
