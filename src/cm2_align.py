@@ -47,12 +47,21 @@ if __name__ == "__main__":
 
 	# get numpy file of cells
 	cells_filename = sys.argv[2]
-
+	
 	# get location of elastix folder
 	elastix_dir = sys.argv[3]
+	print(elastix_dir[-1])
+	if elastix_dir[-1]=='/':
+		elastix_dir = elastix_dir[:-1]
 
 	# get location where you want to save stuff to
 	save_dir = sys.argv[4]
+	print('edir -1 above,saveir -1 below')
+	print(save_dir[-1])
+	if '/' in save_dir[-1]:
+		save_dir = save_dir[:-1]
+	print(save_dir)
+
 	if not os.path.isdir(save_dir):
 		if os.path.isdir(os.path.dirname(save_dir)):
 			os.mkdir(save_dir)
@@ -159,6 +168,7 @@ if __name__ == "__main__":
 		final_df_tosave_filename = os.path.join(save_dir,"{}_reg_in_atl_transform_zyx_voxels.npy".format(brainname))
 
 	os.rename(os.path.join(save_dir,"posttransformed_zyx_voxels.npy"),final_df_tosave_filename)
+
 	# DEBUGGING
 	newdf = np.load(final_df_tosave_filename)
 	print("MAX FINAL DIMS ARE: (z,y,x) {},{},{}".format(np.max(newdf[:,0]),np.max(newdf[:,1]),np.max(newdf[:,2])))
