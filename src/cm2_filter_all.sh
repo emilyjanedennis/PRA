@@ -10,7 +10,12 @@ module load anacondapy/2020.11
 . activate cm2
 
 # change these:
-declare -a LIST_OF_BRAINS=("E130" "E131" "X073")
+declare -a LIST_OF_BRAINS=("j316"
+			"E130"
+			"X073"
+			"X078"
+			"j317")
+
 declare -a FOLDER="/scratch/ejdennis/cm2_brains"
 
 # sends out jobs
