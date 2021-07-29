@@ -105,9 +105,11 @@ if __name__ == "__main__":
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_642_Em_2_corrected")
 	else:
 		# cells are in reg_ch
+    
 		transform_folders = [os.path.join(elastix_dir,"atl_to_reg")]
 		reg_file = os.path.join(dszd_folder,"reg__downsized_for_atlas.tif")
 		resampled_dims = np.shape(tif.imread(reg_file))
+    
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_488_Em_0_corrected")
 
 	# get original dims, reorient and flip y if needed
