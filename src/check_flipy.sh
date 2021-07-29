@@ -8,4 +8,4 @@
 module load anacondapy/2020.11
 . activate lightsheet
 
-python flip_check.py $1
+python check_flipy.py $1

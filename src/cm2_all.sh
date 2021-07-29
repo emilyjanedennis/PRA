@@ -37,9 +37,7 @@ echo "$SCOPE"
 # add step 1
 OUT2=$(sbatch --array=0-500 -p Brody slurm_files/cm2_step1.sh "$DEST" "$SCOPE")
 echo $OUT2
-echo "done with stp1"
 
 # add step 3
 OUT3=$(sbatch --dependency=afterany:${OUT2##* } -p Brody --array=0 slurm_files/cm2_step3.sh $DEST $SCOPE)
 echo $OUT3
-echo "donew ith stp3"

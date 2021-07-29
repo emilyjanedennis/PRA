@@ -32,6 +32,10 @@ def get_nested_tiffs(dir):
 		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*.tif*"))[0])
 	elif len(glob.glob(os.path.join(dir,"*/*/*.tif*"))) > 2:
 		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*/*.tif*"))[0])
+	elif len(glob.glob(os.path.join(dir,"*/*/*/*.tif*"))) >2:
+		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*/*/*.tif*"))[0])
+	elif len(glob.glob(os.path.join(dir,"*/*/*/*/*.tif*"))) >2:
+		tiff_dir = os.path.dirname(glob.glob(os.path.join(dir,"*/*/*/*/*.tif*"))[0])
 	else:
 		print('WARNING, tiffdir is empty, could not find nested dir in {}'.format(dir))
 		tiff_dir=[]

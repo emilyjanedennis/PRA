@@ -5,7 +5,7 @@
 #SBATCH -o logs/clearmap2_%j_%a.out        # STDOUT #add _%a to see each array job
 #SBATCH -e logs/clearmap2_%j_%a.err        # STDERR #add _%a to see each array job
 #SBATCH --contiguous #used to try and get cpu mem to be contigous
-#SBATCH --mem 240000 #120 gbs
+#SBATCH --mem 240000 #240 gbs
 
 cat /proc/$$/status | grep Cpus_allowed_list
 module load anacondapy/2020.11

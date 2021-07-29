@@ -10,16 +10,16 @@ module load anacondapy/2020.11
 . activate cm2
 
 # change these:
-declare -a LIST_OF_BRAINS=("A296" "A300" "E130" "E131" "E154" "M122" "m128" "X073" "X078" "a253" "e142" "e143" "e144" "e153" "h234" "j316" "j137" "j318" "j319")
-declare -a FOLDER = "/scratch/ejdennis/cm2_brains"
+declare -a LIST_OF_BRAINS=("E130" "E131" "X073")
+declare -a FOLDER="/scratch/ejdennis/cm2_brains"
 
 # sends out jobs
 for (( n=0; n<=${#LIST_OF_BRAINS[@]}; n++ ))
 do
     echo "$n"
     echo "${LIST_OF_BRAINS[n]}"
-    sbatch cm2_filter.sh "$1" "${LIST_OF_BRAINS[n]}" "3" "30" "120" "reg"
-    sbatch cm2_filter.sh "$1" "${LIST_OF_BRAINS[n]}" "3" "30" "120" "cell"
+    sbatch cm2_filter.sh "${FOLDER}" "${LIST_OF_BRAINS[n]}" "3" "30" "120" "reg"
+    sbatch cm2_filter.sh "${FOLDER}" "${LIST_OF_BRAINS[n]}" "3" "30" "120" "cell"
 done
 
 # 1 - directory where brain(s) live
