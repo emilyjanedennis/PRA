@@ -24,19 +24,24 @@ import os, csv, json, shutil, glob, sys
 import numpy as np
 import pandas as pd
 import tifffile as tif
+sys.path.append(os.path.dirname(__file__))
+from utils.io import reformat_final_slash_in_filestring
+
 
 if __name__ == "__main__":
 
 	# load aligned cells
-	cells = np.load(sys.argv[1])	
+	cells = np.load(reformat_final_slash_in_filestring(sys.argv[1]))	
 	cells = np.array(list(zip(*cells)))[0:3,:]
 	# load an annotation volume (usually eroded) in atlas space
-	ann_volume = tif.imread(sys.argv[2])
+	ann_volume = tif.imread(reformat_final_slash_in_filestring(sys.argv[2]))
 	print("shape of ann_vol = {}".format(np.shape(ann_volume)))
-	ann_labels = pd.read_csv(sys.argv[3])
+	ann_labels = pd.read_csv(reformat_final_slash_in_filestring(sys.argv[3]))
 
 	# get save_dir, brainname, and channel
-	save_dir = sys.argv[4]
+	save_dir = reformat_final_slash_in_filestring(sys.argv[4])
+	if not os.path.isdir(save_dir):
+		os.mkdir(save_dir)
 	brain_name = sys.argv[5]
 	ch = sys.argv[6]
 
@@ -61,7 +66,6 @@ if __name__ == "__main__":
 		z,y,x = cells_floored[:,i]
 		try:
 			if ann_volume[x,y,z] > 0:
-				print(ann_volume[x,y,z])
 				region_list.append(ann_volume[x,y,z])
 			bool_cell_vol[x,y,z]+=1
 		except:
