@@ -67,7 +67,7 @@ if __name__ == "__main__":
 		try:
 			if ann_volume[x,y,z] > 0:
 				region_list.append(ann_volume[x,y,z])
-			bool_cell_vol[x,y,z]+=1
+			bool_cell_vol[z,y,x]=255
 		except:
 			fails+=1
 	print("{} failed points outside volume space".format(fails))
