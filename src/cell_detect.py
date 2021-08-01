@@ -67,7 +67,8 @@ if __name__ == '__main__':
 		cell_detection_parameter['shape_detection']['threshold'] = 130
 		print('/n params are k5, 130')
 
-	directory = str(sys.argv[2]) #e.g. os.path.join('/scratch/ejdennis/cm2_brains/j317/ch_488/')
+	directory = str(sys.argv[2]) 
+	#e.g. os.path.join('/scratch/ejdennis/cm2_brains/j317/ch_488/')
 
 	expression_raw      = 'Z<Z,4>.tif'    
 	expression_auto	= 'Z<Z,4>.tif'

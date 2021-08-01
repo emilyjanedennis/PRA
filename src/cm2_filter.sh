@@ -4,6 +4,7 @@
 #SBATCH -t 360                # time (minutes)
 #SBATCH -o logs/cm2_filter_%j.out        # STDOUT
 #SBATCH -e logs/cm2_filter_%j.err        # STDERR
+#SBATCH --mem 180000
 
 cat /proc/$$/status | grep Cpus_allowed_list
 module load anacondapy/2020.11

@@ -25,6 +25,11 @@ from skimage.exposure import rescale_intensity
 from scipy.ndimage.interpolation import zoom
 
 
+def reformat_final_slash_in_filestring(filestring):
+	if "/" in filestring[-1]:
+		filestring = filestring[:-1]
+	return filestring
+
 def get_nested_tiffs(dir):
 	if len(glob.glob(os.path.join(dir,"*.tif*"))) > 2:
 		tiff_dir = dir
