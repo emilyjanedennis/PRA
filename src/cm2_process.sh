@@ -32,7 +32,7 @@ echo "$DEST"
 echo "$SCOPE"
 
 # add step 1
-OUT2=$(sbatch --array=0-500 -p Brody cm2_step1.sh "$DEST" "$SCOPE")
+OUT2=$(sbatch --array=0-300 -p Brody cm2_step1.sh "$DEST" "$SCOPE")
 echo $OUT2
 
 # add step 3

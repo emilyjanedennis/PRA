@@ -63,8 +63,8 @@ if __name__ == '__main__':
 		cell_detection_parameter['shape_detection']['threshold'] = 300
 		print('/n params are k3, 300')
 	else:
-		cell_detection_parameter['background_correction']['shape'] = (5,5)
-		cell_detection_parameter['shape_detection']['threshold'] = 130
+		cell_detection_parameter['background_correction']['shape'] = (8,8)
+		cell_detection_parameter['shape_detection']['threshold'] = 140
 		print('/n params are k5, 130')
 
 	directory = str(sys.argv[2]) 

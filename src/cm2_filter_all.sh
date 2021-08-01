@@ -23,8 +23,8 @@ for (( n=0; n<=${#LIST_OF_BRAINS[@]}; n++ ))
 do
     echo "$n"
     echo "${LIST_OF_BRAINS[n]}"
-    sbatch cm2_filter.sh "${FOLDER}" "${LIST_OF_BRAINS[n]}" "3" "30" "120" "reg"
-    sbatch cm2_filter.sh "${FOLDER}" "${LIST_OF_BRAINS[n]}" "3" "30" "120" "cell"
+    sbatch cm2_filter.sh "${FOLDER}" "${LIST_OF_BRAINS[n]}" "3" "6" "200" "reg"
+    sbatch cm2_filter.sh "${FOLDER}" "${LIST_OF_BRAINS[n]}" "3" "6" "200" "cell"
 done
 
 # 1 - directory where brain(s) live
