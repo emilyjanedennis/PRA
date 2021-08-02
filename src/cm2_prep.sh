@@ -29,7 +29,7 @@ else
     echo "smartspim"
     SCOPE="smartspim"
     echo "starting rename"
-    OUT0=$(sbatch -p Brody --array=0 cm2_rename.sh $FOLDER $DEST)
+    OUT0=$(sbatch --array=0 cm2_rename.sh $FOLDER $DEST)
     OUT1=$(sbatch --dependency=afterany:${OUT0##* } --array=0 cm2_step0.sh "$DEST" "$SCOPE")
     echo $OUT1
     echo "ran step0"
