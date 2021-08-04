@@ -9,8 +9,8 @@ file takes 6 arguments
 1 - directory where brain(s) live
 2 - brainname
 3 - source value (suggest 3 if at princeton using smartspim)
-4 - size 1 value (suggest 30 if at princeton using smartspim)
-5 - size 2 value (suggest 120 if at princeton using smartspim)
+4 - size 1 value (suggest 6 if at princeton using smartspim)
+5 - size 2 value (suggest 300 if at princeton using smartspim)
 6 - channel "cell" or "reg"
 """
 
