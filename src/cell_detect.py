@@ -54,7 +54,8 @@ if __name__ == '__main__':
 
 	print('starting')
 	#directories and files
-	jobid = int(os.environ["SLURM_ARRAY_TASK_ID"])
+	#jobid = int(os.environ["SLURM_ARRAY_TASK_ID"])
+	jobid=0
 	step = int(sys.argv[1])
 	print('sysarg v output is {}'.format(sys.argv))
 
@@ -63,9 +64,9 @@ if __name__ == '__main__':
 		cell_detection_parameter['shape_detection']['threshold'] = 300
 		print('/n params are k3, 300')
 	else:
-		cell_detection_parameter['background_correction']['shape'] = (8,8)
-		cell_detection_parameter['shape_detection']['threshold'] = 140
-		print('/n params are k5, 130')
+		cell_detection_parameter['background_correction']['shape'] = (5,5)
+		cell_detection_parameter['shape_detection']['threshold'] = 100
+		print("params are k5, thresh 100")
 
 	directory = str(sys.argv[2]) 
 	#e.g. os.path.join('/scratch/ejdennis/cm2_brains/j317/ch_488/')
@@ -95,7 +96,7 @@ if __name__ == '__main__':
 		# Split into blocks
 		print("splitting into blocks")
 		blocks = bp.split_into_blocks(ws.source('stitched'), 
-			processes=12, 
+			processes=11, 
 			axes=[2], # chunks along z
 			size_min=5,
 			size_max=20, 

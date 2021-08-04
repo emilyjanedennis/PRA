@@ -22,4 +22,4 @@ xvfb-run python cm2_filter.py $1 $2 $3 $4 $5 $6
 # 5 - size 2 (suggest 200 if at princeton using smartspim)
 # 6 - channel ("cell" or "reg")
 # example call:
-# sbatch cm2_filter.sh "/scratch/ejdennis/cm2_brains" "j316" "3" "30" "120" "cell"
+# sbatch cm2_filter.sh "/scratch/ejdennis/cm2_brains" "j316" "3" "6" "300" "cell"

@@ -56,17 +56,17 @@ if __name__ == "__main__":
 	bool_cell_vol=np.zeros(np.shape(ann_volume))
 
 	#debugging
-	print("max x is {}".format(np.max(cells_floored[0,:])))
+	print("max z is {}".format(np.max(cells_floored[0,:])))
 	print("max y is {}".format(np.max(cells_floored[1,:])))
-	print("max z is {}".format(np.max(cells_floored[2,:])))
+	print("max x is {}".format(np.max(cells_floored[2,:])))
 
 
 	print("making 3d volume and list")
 	for i in np.arange(0,np.shape(cells_floored)[1]):
 		z,y,x = cells_floored[:,i]
 		try:
-			if ann_volume[x,y,z] > 0:
-				region_list.append(ann_volume[x,y,z])
+			if ann_volume[z,y,x] > 0:
+				region_list.append(ann_volume[z,y,x])
 			bool_cell_vol[z,y,x]=255
 		except:
 			fails+=1
