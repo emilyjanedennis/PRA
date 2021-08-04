@@ -4,6 +4,7 @@
 
 # Data folder
 data/*
+notebooks/misc/connectivity/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
