@@ -54,8 +54,7 @@ if __name__ == '__main__':
 
 	print('starting')
 	#directories and files
-	#jobid = int(os.environ["SLURM_ARRAY_TASK_ID"])
-	jobid=0
+	jobid = int(os.environ["SLURM_ARRAY_TASK_ID"])
 	step = int(sys.argv[1])
 	print('sysarg v output is {}'.format(sys.argv))
 
