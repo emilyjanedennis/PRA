@@ -56,7 +56,6 @@ if __name__ == "__main__":
 
 	# get location where you want to save stuff to
 	save_dir = sys.argv[4]
-	print('edir -1 above,saveir -1 below')
 	print(save_dir[-1])
 	if '/' in save_dir[-1]:
 		save_dir = save_dir[:-1]
@@ -80,25 +79,38 @@ if __name__ == "__main__":
 		flip_y = int(sys.argv[6])
 	except:
 		flip_y = 0
+	print("flip y is {}".format(flip_y))
 
 	# get switch x and z default on
 	# if True, this assumes that you have axial images and sagittal atlas/volumes
 	try:
-		switch_x_and_z = bool(sys.argv[7])
+		switch_x_and_z = bool(int(sys.argv[7]))
 	except:
 		switch_x_and_z = True
-
+	print("switch x and z is {}".format(switch_x_and_z))
 
 	# load cells, reorient axial -> sagittal if needed
 	df = pd.DataFrame(np.load(cells_filename))
 	df = df.apply(pd.to_numeric,errors='coerce')
-	if switch_x_and_z:
-		df.columns = ['z','y','x','size','source','bkrd']
+	if int(switch_x_and_z):
+		print('switched: columns labeled z y x')
+		df.columns=['z','y','x','size','source','bkrd']
+		if not switch_x_and_z:
+			print('but would not have been')	
+	else:
+		print('not switched, columns labeled x y z')
+		df.columns = ['x','y','z','size','source','bkrd']
+	print("df 0 is {}".format(df[df.index==0]))
 	df_tosave = df[['z','y','x']].to_numpy()
+	print("dftosave 0 is {}".format(df_tosave[0]))
 	print("z max is {} y max is {} x max is {}".format(np.max(df['z']),np.max(df['y']),np.max(df['x'])))
 
 	# filename to save cells in proper format, later we'll save after flipping y if needed
-	df_tosave_filename = os.path.join(save_dir,'{}_cells.npy'.format(brainname))
+	if transform_type > 1:
+		ch="642"
+	else:
+		ch="488"
+	df_tosave_filename = os.path.join(save_dir,'{}_{}_cells.npy'.format(brainname,ch))
 
 	# find reg__ and cell__ downsized_for_atlas files
 	dszd_folder = find_downsized_files(elastix_dir)
@@ -114,11 +126,9 @@ if __name__ == "__main__":
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_642_Em_2_corrected")
 	else:
 		# cells are in reg_ch
-    
 		transform_folders = [os.path.join(elastix_dir,"atl_to_reg")]
 		reg_file = os.path.join(dszd_folder,"reg__downsized_for_atlas.tif")
 		resampled_dims = np.shape(tif.imread(reg_file))
-    
 		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_488_Em_0_corrected")
 
 	# get original dims, reorient and flip y if needed
@@ -126,8 +136,8 @@ if __name__ == "__main__":
 	list_of_files = glob.glob(os.path.join(tiff_dir,"*.tif*"))
 
 	z = len(list_of_files)
-	x,y = np.shape(tif.imread(list_of_files[int(z/2)]))
-	print("DIMENSIONS WERE (ZYX) {}".format((z,y,x)))
+	y,x = np.shape(tif.imread(list_of_files[int(z/2)]))
+	print("DIMENSIONS of raw tiffs (ZYX) {}".format((z,y,x)))
 
 	if switch_x_and_z:
 		original_dims = (x,y,z)
@@ -138,15 +148,18 @@ if __name__ == "__main__":
 		df['y'] = -df['y'] + y
 		df_tosave = df[['z','y','x']].to_numpy()
 	np.save(df_tosave_filename,df_tosave)
+	print('saved out {} as df with z,y,x formatting'.format(df_tosave_filename))
 
-	print("DIMENSIONS AFTER FLIP, XY SWITCH (ZYX) ARE {}".format(original_dims))
+	print("DIMENSIONS of raw data AFTER FLIP, XY SWITCH (ZYX) ARE {}".format(original_dims))
 
 	# get transform files
 	transform_files = get_transform_files_from_folder(transform_folders[0])
 	print("USING TRANSFORM FOLDER {}".format(transform_folders[0]))	
 	# run transformation
-	transform_points(df_tosave_filename,save_dir,transform_files, [original_dims,resampled_dims])
+	# reample first... [original_dims,resampled_dims]
+	print("resampled dims are {}".format(resampled_dims))
 
+	transform_points(df_tosave_filename,save_dir,transform_files,[original_dims,resampled_dims])
 	# rename based on which process and if cell file, do second transform
 	if transform_type > 1:
 		# rename
@@ -168,7 +181,3 @@ if __name__ == "__main__":
 		final_df_tosave_filename = os.path.join(save_dir,"{}_reg_in_atl_transform_zyx_voxels.npy".format(brainname))
 
 	os.rename(os.path.join(save_dir,"posttransformed_zyx_voxels.npy"),final_df_tosave_filename)
-
-	# DEBUGGING
-	newdf = np.load(final_df_tosave_filename)
-	print("MAX FINAL DIMS ARE: (z,y,x) {},{},{}".format(np.max(newdf[:,0]),np.max(newdf[:,1]),np.max(newdf[:,2])))

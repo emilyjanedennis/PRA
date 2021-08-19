@@ -4,7 +4,7 @@
 #SBATCH -t 300
 #SBATCH -o logs/cm2_seg_%j.out        # STDOUT #add _%a to see each array job
 #SBATCH -e logs/cm2_seg_%j.err        # STDERR #add _%a to see each array job
-#SBATCH --mem 20000
+#SBATCH --mem 180000
 
 echo "In the directory: `pwd` "
 

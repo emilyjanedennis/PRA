@@ -25,6 +25,7 @@ def find_downsized_files(src):
         output_src = os.path.dirname(os.path.dirname(src))
     return output_src
 
+
 def points_resample(src, original_dims, resample_dims, verbose=True):
     """Function to adjust points given resizing by generating a transform matrix
 
@@ -79,7 +80,7 @@ def transform_points(src, dst, transformfiles, resample_points=False):
         cells = points_resample(cells, original_dims, resample_dims)
 
     # generate text file 
-    print("GENERATING {} switching zyx npy to xyz for transformix".format(dst))
+    print("GENERATING {} switching zyx npy to xyz textfile for transformix".format(dst))
     pretransform_text_file = create_text_file_for_elastix(cells, dst)
 
     # copy over elastix files
@@ -88,6 +89,8 @@ def transform_points(src, dst, transformfiles, resample_points=False):
 
     # run transformix on points
     points_file = point_transformix(pretransform_text_file, transformfiles[-1], dst)
+
+    sys.stdout.write("\n\n{} points file in dst {}  \n\n".format(points_file,dst))
 
     # convert registered points into structure counts
     unpack_pnts(points_file, dst)
@@ -104,14 +107,14 @@ def create_text_file_for_elastix(src, dst):
     dst = folder location to write points
     """
 
-    print("This function assumes ZYX centers...")
+    print("This function assumes ZYX centers, turning a npy file into a txt file in xyz...")
 
     # setup folder
     if not os.path.exists(dst):
         os.mkdir(dst)
 
     # create txt file, with elastix header, then populate points
-    pth = os.path.join(dst, "zyx_points_pretransform.txt")
+    pth = os.path.join(dst, "xyz_points_pretransform.txt")
 
     # load
     if type(src) == np.ndarray:

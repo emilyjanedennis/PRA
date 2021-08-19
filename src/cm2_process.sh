@@ -32,9 +32,9 @@ echo "$DEST"
 echo "$SCOPE"
 
 # add step 1
-OUT2=$(sbatch --array=0-300 -p Brody cm2_step1.sh "$DEST" "$SCOPE")
+OUT2=$(sbatch --array=0-300 cm2_step1.sh "$DEST" "$SCOPE")
 echo $OUT2
 
 # add step 3
-OUT3=$(sbatch --dependency=afterany:${OUT2##* } -p Brody --array=0 cm2_step3.sh $DEST $SCOPE)
+OUT3=$(sbatch --dependency=afterany:${OUT2##* } --array=0 cm2_step3.sh $DEST $SCOPE)
 echo $OUT3
