@@ -234,48 +234,15 @@ declare -a FLIP_Y=("1"
 	"1")
 
 
-
-
-
 for (( n=0; n<=${#LIST_OF_FOLDERS[@]}; n++ ))
 do
 
     echo "$n"
-    echo "${LIST_OF_FOLDERS[n]}"
-    echo "${LIST_OF_ELASTIX_FOLDERS[n]}"
-    echo "${LIST_OF_CELL_REG[n]}"
     
-    if [ "${LIST_OF_CELL_REG[n]}" = "cell" ];
-        then
-            CELL_VALUE="642"
-            NUM_TRANSFORMS="2"
-        else
-            CELL_VALUE="488"
-            NUM_TRANSFORMS="1"
-    fi
+    FILE_TO_CP="${LIST_OF_ELASTIX_FOLDERS[n]}/${LIST_OF_CELL_REG[n]}_to_reg/result.1.tif"
+    DESTINATION="/scratch/ejdennis/cm2_brains/${LIST_OF_BRAINNAMES[n]}_${LIST_OF_CELL_REG[n]}_in_reg.tif"
+    cp ${FILE_TO_CP} ${DESTINATION}    
 
-    echo "$CELL_VALUE"
-    echo "$NUM_TRANSFORMS"    
-    DESTINATION="/scratch/ejdennis/cm2_brains/${LIST_OF_BRAINNAMES[n]}/${CELL_VALUE}"
+    echo "$FILE_TO_CP"
     echo "$DESTINATION"
-    FILT_NUMPY="${DESTINATION}/${LIST_OF_BRAINNAMES[n]}_${CELL_VALUE}_filt.npy"
-    ALIGNED_NUMPY="${DESTINATION}/aligned_3_20_400/${LIST_OF_BRAINNAMES[n]}_${LIST_OF_CELL_REG[n]}_in_atl_transform_zyx_voxels.npy"
-    echo "$ALIGNED_NUMPY"
-    
-    #OUT0=$(sbatch --array=0 cm2_prep.sh "${LIST_OF_FOLDERS[n]}" "$DESTINATION" "smartspim")
-    #echo "$OUT0"
-    #OUT1=$(sbatch --dependency=afterany:${OUT0##* } --array=0 cm2_process.sh "${LIST_OF_FOLDERS[n]}" "$DESTINATION" "smartspim")
-
-    #OUT1=$(sbatch --array=0-300 cm2_step1.sh "$DESTINATION" "smartspim")
-    #echo "$OUT1"
-    #OUT2=$(sbatch --dependency=afterany:${OUT1##* } --array=0 cm2_step3.sh "$DESTINATION" "smartspim")
-    #echo "$OUT2"
-    ##echo "${LIST_OF_BRAINNAMES[n]}"
-    OUT3=$(sbatch -p Brody cm2_filter.sh "/scratch/ejdennis/cm2_brains" "${LIST_OF_BRAINNAMES[n]}" "3" "20" "400" "${LIST_OF_CELL_REG[n]}")
-    echo "$OUT3"
-    OUT4=$(sbatch --dependency=afterany:${OUT3##* } cm2_align.sh "$NUM_TRANSFORMS" "$FILT_NUMPY" "${LIST_OF_ELASTIX_FOLDERS[n]}" "${DESTINATION}/aligned_3_20_400" "${LIST_OF_BRAINNAMES[n]}" "${FLIP_Y[n]}" "1")
-    echo "$OUT4"
-    OUT5=$(sbatch --dependency=afterany:${OUT4##* } cm2_segmentation.sh "$ALIGNED_NUMPY" "/jukebox/brody/ejdennis/SIGMA_ann_in_mPRA_90um_edge_90um_vent_erosion.tif" "/jukebox/brody/lightsheet/labels/SIGMA_in_PRA.csv" "${DESTINATION}/segmented_3_20_400" "${LIST_OF_BRAINNAMES[n]}" "$CELL_VALUE")
-    echo "$OUT5"
-
 done

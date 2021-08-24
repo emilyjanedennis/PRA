@@ -28,7 +28,7 @@ if not os.path.exists(dst_dir):
 
 print("dst dir is {}".format(dst_dir))
 
-src_files = sorted(glob.glob(src_dir + '/**/*.tif', recursive=True))
+src_files = sorted(glob.glob(src_dir + '/*.tif', recursive=True))
 print("src files")
 print(src_files)
 

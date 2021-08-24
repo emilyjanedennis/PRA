@@ -68,6 +68,9 @@ if __name__ == '__main__':
 		print("params are k5, thresh 100")
 
 	directory = str(sys.argv[2]) 
+	if directory[-1]=='/':
+		directory = directory[:-1]
+
 	#e.g. os.path.join('/scratch/ejdennis/cm2_brains/j317/ch_488/')
 
 	expression_raw      = 'Z<Z,4>.tif'    

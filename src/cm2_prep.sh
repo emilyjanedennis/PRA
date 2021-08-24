@@ -24,7 +24,10 @@ if [[ $3 = "lavision" ]]
 then
     echo "lavision"
     SCOPE="lavision"
-    OUT1=$(sbatch --array=0 cm2_step0.sh "$DEST" "$SCOPE")
+    echo "starting rename"
+    OUT0=$(sbatch --array=0 cm2_rename.sh $FOLDER $DEST)
+    echo $OUT0
+    OUT1=$(sbatch --dependency=afterany:${OUT0##* } --array=0 cm2_step0.sh "$DEST" "$SCOPE")
 else
     echo "smartspim"
     SCOPE="smartspim"

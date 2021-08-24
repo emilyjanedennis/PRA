@@ -70,12 +70,12 @@ if __name__ == "__main__":
 			bool_cell_vol[z,y,x]=255
 			if ann_volume[z,y,x] > 0:
 				region_list.append(ann_volume[z,y,x])
-				segmented_cell_vol[x,y,z]=ann_volume[z,y,x]
+				segmented_cell_vol[z,y,x]=ann_volume[z,y,x]
 		except:
 			fails+=1
 	sys.stdout.write("{} failed points outside volume space \n".format(fails))
 
-	tif.imsave(os.path.join(save_dir,"{}_{}_segmented_cell_volume.tif".format(brain_name,ch)),segmented_cell_vol.astype('uint8'))
+	tif.imsave(os.path.join(save_dir,"{}_{}_segmented_cell_volume.tif".format(brain_name,ch)),segmented_cell_vol.astype('uint16'))
 	tif.imsave(os.path.join(save_dir,"{}_{}_bool_cell_volume.tif".format(brain_name,ch)),bool_cell_vol.astype('uint8'))
 	df_to_save = pd.DataFrame(region_list)
 	df_to_save.to_csv(os.path.join(save_dir,"{}_{}_region_list.csv".format(brain_name,ch)))
