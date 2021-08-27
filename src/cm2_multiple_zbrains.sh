@@ -56,7 +56,7 @@ do
     echo "${LIST_OF_ELASTIX_FOLDERS[n]}"
     echo "${LIST_OF_CELL_REG[n]}"
 
-    SCOPE="lavision"
+    scope="lavision"
     
     if [ "${LIST_OF_CELL_REG[n]}" = "cell" ];
         then
@@ -75,20 +75,21 @@ do
     #ALIGNED_NUMPY="${DESTINATION}/aligned_3_20_400/${LIST_OF_BRAINNAMES[n]}_${LIST_OF_CELL_REG[n]}_in_atl_transform_zyx_voxels.npy"
     #echo "$ALIGNED_NUMPY"
 
-    OUTRENAME=$(sbatch --array=0 cm2_rename.sh "${LIST_OF_FOLDERS[n]}" "$DESTINATION")
-    echo "$OUTRENAME"
-    OUT0=$(sbatch --dependency=afterany:${OUTRENAME##* } --array=0 cm2_step0.sh "$DESTINATION" "$SCOPE")
-    echo "$OUT0"
-    OUT1=$(sbatch --dependency=afterany:${OUT0##* } --array=0-300 cm2_step1.sh "$DESTINATION" "$SCOPE")
-    echo "$OUT1"
-    OUT2=$(sbatch --dependency=afterany:${OUT1##* } --array=0 cm2_step3.sh "$DESTINATION" "$SCOPE")
-    echo "$OUT2"
-    echo "${LIST_OF_BRAINNAMES[n]}"
+    #OUTRENAME=$(sbatch --array=0 cm2_rename.sh "${LIST_OF_FOLDERS[n]}" "$DESTINATION")
+    #echo "$OUTRENAME"
+    #OUT0=$(sbatch --dependency=afterany:${OUTRENAME##* } --array=0 cm2_step0.sh "$DESTINATION" "$SCOPE")
+    #echo "$OUT0"
+    #OUT1=$(sbatch --dependency=afterany:${OUT0##* } --array=0-300 cm2_step1.sh "$DESTINATION" "$SCOPE")
+    #echo "$OUT1"
+    #OUT2=$(sbatch --dependency=afterany:${OUT1##* } --array=0 cm2_step3.sh "$DESTINATION" "$SCOPE")
+    #echo "$OUT2"
+    #echo "${LIST_OF_BRAINNAMES[n]}"
     #OUT3=$(sbatch --dependency=afterany:${OUT2##* } cm2_filter.sh "/scratch/ejdennis/cm2_brains" "${LIST_OF_BRAINNAMES[n]}" "3" "20" "400" "${LIST_OF_CELL_REG[n]}")
+    #OUT3=$(sbatch -p Brody cm2_filter.sh "/scratch/ejdennis/lavision_brains" "${LIST_OF_BRAINNAMES[n]}" "3" "30" "120" "${LIST_OF_CELL_REG[n]}")
     #echo "$OUT3"
-    #OUT4=$(sbatch --dependency=afterany:${OUT3##* } cm2_align.sh "$NUM_TRANSFORMS" "$FILT_NUMPY" "${LIST_OF_ELASTIX_FOLDERS[n]}" "${DESTINATION}/aligned" "${LIST_OF_BRAINNAMES[n]}" "${FLIP_Y[n]}" "1")
-    #echo "$OUT4"
-    #OUT5=$(sbatch --dependency=afterany:${OUT4##* } cm2_segmentation.sh "$ALIGNED_NUMPY" "/jukebox/brody/ejdennis/SIGMA_ann_in_mPRA_90um_edge_90um_vent_erosion.tif" "/jukebox/brody/lightsheet/labels/SIGMA_in_PRA.csv" "${DESTINATION}/segmented" "${LIST_OF_BRAINNAMES[n]}" "$CELL_VALUE")
-    #echo "$OUT5"
+    OUT4=$(sbatch -p Brody cm2_align.sh "$NUM_TRANSFORMS" "$FILT_NUMPY" "${LIST_OF_ELASTIX_FOLDERS[n]}" "${DESTINATION}/aligned" "${LIST_OF_BRAINNAMES[n]}" "${FLIP_Y[n]}" "1" "lavision")
+    echo "$OUT4"
+    OUT5=$(sbatch --dependency=afterany:${OUT4##* } -p Brody cm2_segmentation.sh "$ALIGNED_NUMPY" "/jukebox/brody/ejdennis/SIGMA_ann_in_mPRA_90um_edge_90um_vent_erosion.tif" "/jukebox/brody/lightsheet/labels/SIGMA_in_PRA.csv" "${DESTINATION}/segmented" "${LIST_OF_BRAINNAMES[n]}" "$CELL_VALUE")
+    echo "$OUT5"
 
 done

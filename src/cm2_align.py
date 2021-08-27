@@ -21,7 +21,7 @@ folder logic from PRA repo, if you use different folder logic
 or organizaiton, you'll need to change some of these functions
 e.g. python 2 "/scratch/ejdennis/cm2_brains/a253/cells_642_filt.npy"
 	"/jukebox/LightSheetData/lightserv/pbibawi/pb_udisco/pb_udisco_a253/imaging_request_1/rawdata/resolution_3.6x/elastix"
-	"/scratch/ejdennis/cm2_brains/aligned_cells/" 1 1 "mPRA"
+	"/scratch/ejdennis/cm2_brains/aligned_cells/" 1 1 
 """
 
 import os, csv, json, shutil, glob
@@ -89,7 +89,16 @@ if __name__ == "__main__":
 		switch_x_and_z = True
 	print("switch x and z is {}".format(switch_x_and_z))
 
+	print("sys.argvs {}".format(sys.argv))
+	try:
+		scope = str(sys.argv[8])
+	except:
+		scope = "smartspim"
+	print(scope)
+
 	# load cells, reorient axial -> sagittal if needed
+	print(cells_filename)
+	print(np.load(cells_filename)[0])
 	df = pd.DataFrame(np.load(cells_filename))
 	df = df.apply(pd.to_numeric,errors='coerce')
 	if int(switch_x_and_z):
@@ -123,13 +132,20 @@ if __name__ == "__main__":
 		# get resampled dims
 		resampled_dims = np.shape(tif.imread(cell_file))
 		# get original dims: find folder with full size data
-		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_642_Em_2_corrected")
+		if scope!="smartspim":
+			full_size_dir = os.path.join(os.path.dirname(elastix_dir),"full_sizedatafld/_ch01")
+		else:
+			full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_642_Em_2_corrected")
 	else:
 		# cells are in reg_ch
 		transform_folders = [os.path.join(elastix_dir,"atl_to_reg")]
 		reg_file = os.path.join(dszd_folder,"reg__downsized_for_atlas.tif")
 		resampled_dims = np.shape(tif.imread(reg_file))
-		full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_488_Em_0_corrected")
+		print("scope is {}".format(scope))
+		if scope != "smartspim":
+			full_size_dir=os.path.join(os.path.dirname(elastix_dir),"full_sizedatafld/_ch00")
+		else:
+			full_size_dir = os.path.join(os.path.dirname(elastix_dir),"Ex_488_Em_0_corrected")
 
 	# get original dims, reorient and flip y if needed
 	tiff_dir = get_nested_tiffs(full_size_dir)

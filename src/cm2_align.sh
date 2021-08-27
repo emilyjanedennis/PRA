@@ -5,7 +5,7 @@
 #SBATCH -o logs/cm2_align_%j.out        # STDOUT #add _%a to see each array job
 #SBATCH -e logs/cm2_align_%j.err        # STDERR #add _%a to see each array job
 #SBATCH --contiguous #used to try and get cpu mem to be contigous
-#SBATCH --mem 230000
+#SBATCH --mem 180000
 
 echo "In the directory: `pwd` "
 
@@ -13,7 +13,7 @@ module load anacondapy/2020.11
 module load elastix/4.8
 . activate lightsheet
 
-xvfb-run python cm2_align.py $1 $2 $3 $4 $5 $6 $7
+xvfb-run python cm2_align.py $1 $2 $3 $4 $5 $6 $7 $8
 
 # functionality
 # in the PRA/src folder 

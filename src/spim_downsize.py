@@ -55,7 +55,7 @@ def dwnsz(pth,save_str,src):
     z = len(imgs)
     y,x = sitk.GetArrayFromImage(sitk.ReadImage(imgs[0])).shape
     arr = np.zeros((z,y,x))
-    atlpth = "../data/mPRA_adj.tif"
+    atlpth = "../data/mPRA.tif"
     atl = sitk.GetArrayFromImage(sitk.ReadImage(atlpth))
     atlz,atly,atlx = atl.shape #get shape, sagittal
     #read all the downsized images
@@ -86,13 +86,13 @@ if __name__ == "__main__":
     print(rawdata)
 
     for i in rawdata:
-        if 'Ex_488' in i:
+        if 'Ex_488' in i or '_ch00' in i:
             reg_ch = i
             while len([file for file in os.listdir(reg_ch) if '.tif' in file]) < 10:
                 reg_ch = os.path.join(reg_ch,[f.name for f in os.scandir(reg_ch) if f.is_dir()][0])
             print('reg ch is {}'.format(reg_ch))
             dwnsz(reg_ch,'reg_',src)
-        if 'Ex_64' in i:
+        if 'Ex_64' in i or '_ch01' in i:
             cell_ch=i
             while len([file for file in os.listdir(cell_ch) if '.tif' in file]) < 10:
        	       	cell_ch = os.path.join(cell_ch,[f.name for f in os.scandir(cell_ch) if f.is_dir()][0])
