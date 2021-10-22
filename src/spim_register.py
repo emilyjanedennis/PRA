@@ -15,7 +15,7 @@ from utils.registration import elastix_command_line_call
 
 param_fld = os.path.join(os.path.dirname(os.getcwd()),"data/parameter_folder_a1b3")  # change if using mouse
 param_fld_affine = os.path.join(os.path.dirname(os.getcwd()),"data/parameter_folder_a1b1")
-atl = os.path.join(os.path.dirname(os.getcwd()),"data/mPRA.tif")
+atl = os.path.join("../data/mPRA.tif")
 print("atl is {}".format(atl))
 
 # takes 6 command line arguments max
@@ -32,6 +32,11 @@ try:
 except:
     cell = False
 
+try:
+    scope=str(sys.argv[5])
+except:
+    scope="smartspim"
+
 # sometimes these are one level up
 if os.path.exists(os.path.join(src,'reg__downsized_for_atlas.tif')):
     output_src = src
@@ -40,7 +45,10 @@ elif os.path.exists(os.path.join(os.path.dirname(src),'reg__downsized_for_atlas.
 else:
     output_src = os.path.dirname(os.path.dirname(src))
 
-elsrc=os.path.join(os.path.dirname(src),"elastix")
+if scope == "lavision":
+    elsrc=os.path.join(src,"elastix")
+else:
+    elsrc=os.path.join(os.path.dirname(src),"elastix")
 print("elsrc is {}".format(elsrc))
 if not os.path.exists(elsrc):
     os.mkdir(elsrc)

@@ -1,6 +1,6 @@
 #!/bin/env bash
 #
-#SBATCH -c 12                      # number of cores
+#SBATCH -c 1                      # number of cores
 #SBATCH -t 600
 #SBATCH -o logs/smartspim_dsz_%j.out        # STDOUT #add _%a to see each array job
 #SBATCH -e logs/smartspim_dsz_%j.err        # STDERR #add _%a to see each array job

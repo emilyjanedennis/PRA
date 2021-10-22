@@ -22,7 +22,6 @@ optional inputs and their defaults are
 6 - 1 or 0: if jacobian determinate volumes and geometric displacement volumes should be made (default to 0, no)
 """
 
-
 import os
 import sys
 import time
@@ -41,36 +40,39 @@ mv = sys.argv[1]
 fx = sys.argv[2]
 transformfldr = sys.argv[3]
 dstfldr = sys.argv[4]
+if not os.path.exists(dstfldr):
+	os.mkdir(dstfldr)
 
 if len(sys.argv)>5:
-	zoom = int(sys.argv[5])
+	zoomamnt = float(sys.argv[5])
 else:
-	zoom=1.4
+	zoomamnt=1.4
 
 if len(sys.argv)>6:
-	jac=1
+	jac=int(sys.argv[6])
 else:
 	jac=0
 
 moving = tif.imread(mv)
 fixed = tif.imread(fx)
 
-if zoom > 0:
-        enlargedfilename= os.path.join(dstfldr,'zoomed.tif')
-        zf, yf, xf = (fixed.shape[0]/moving.shape[0])*zoom, (fixed.shape[1] / moving.shape[1])*zoom, (fixed.shape[2]/moving.shape[2])*zoom)
-        print("\nzooming...")
-        moving_for_fixed = zoom(moving,(zf,yf,xf),order=0)
-	
+if zoomamnt > 0:
+	enlargedfilename= os.path.join(dstfldr,'zoomed.tif')
+	zf, yf, xf = (fixed.shape[0]/moving.shape[0])*zoomamnt, (fixed.shape[1] / moving.shape[1])*zoomamnt, (fixed.shape[2]/moving.shape[2])*zoomamnt
+	print("\nzooming...")
+	moving_for_fixed = zoom(moving,(zf,yf,xf),order=0)
+
 	print("\nsaving zoomed volume...")
 	tif.imsave(enlargedfilename,moving_for_fixed.astype("uint16"))
 else:
 	enlargedfilename = mv
 
 # copy the parameter files
-a2r = [os.path.join(transformfldr, xx) for xx in os.listdir(transformfilepath) if "Transform" in xx]
+a2r = [os.path.join(transformfldr, xx) for xx in os.listdir(transformfldr) if "Transform" in xx]
 a2r.sort()
 	
-transformfiles = modify_transform_files(transformfiles=a2r, dst=dst)[change_interpolation_order(xx, 0) for xx in transformfiles]
+transformfiles = modify_transform_files(transformfiles=a2r, dst=dstfldr)
+[change_interpolation_order(xx, 0) for xx in transformfiles]
 	
 # change the parameter in the transform files that outputs 16bit images i>
 for fl in transformfiles:  # Read in the file
@@ -85,7 +87,7 @@ for fl in transformfiles:  # Read in the file
 
 # run transformix
 if jac > 0:
-	transformix_plus_command_line_call(enlargedfilename, dst, transformfiles[-1])
+	transformix_plus_command_line_call(enlargedfilename, dstfldr, transformfiles[-1])
 else:
-	transformix_command_line_call(enlargedfilename, dst, transformfiles[-1])
+	transformix_command_line_call(enlargedfilename, dstfldr, transformfiles[-1])
 

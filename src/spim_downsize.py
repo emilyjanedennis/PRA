@@ -70,7 +70,7 @@ def dwnsz(pth,save_str,src):
     print("############### THE NEW AXES ARE {},{},{}".format(z,y,x))
     print((z,y,x))
     print("\n**********downsizing....heavy!**********\n")
-    arrsagd = resize(arrsag, ((atlz*1.4/z),(atly*1.4/y),(atlx*1.4/x)), anti_aliasing=True)
+    arrsagd = resize(arrsag, (int(atlz*1.4),int(atly*1.4),int(atlx*1.4)), anti_aliasing=True)
     print('saving tiff at {}'.format(os.path.join(os.path.dirname(dst), "{}_downsized_for_atlas.tif".format(savestr))))
     tif.imsave(os.path.join(os.path.dirname(dst), "{}_downsized_for_atlas.tif".format(savestr)), arrsagd.astype("uint16"))
 

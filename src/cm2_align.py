@@ -149,6 +149,7 @@ if __name__ == "__main__":
 
 	# get original dims, reorient and flip y if needed
 	tiff_dir = get_nested_tiffs(full_size_dir)
+	print("tiff dir is {}".format(tiff_dir))
 	list_of_files = glob.glob(os.path.join(tiff_dir,"*.tif*"))
 
 	z = len(list_of_files)

@@ -17,7 +17,7 @@ module load anacondapy/2020.11
 module load elastix/4.8
 . activate lightsheet
 
-python spim_register.py $1 $2 $3 $4
+python spim_register.py $1 $2 $3 $4 $5
 
 #functionality
 #takes 4 command line arguments max
@@ -25,3 +25,4 @@ python spim_register.py $1 $2 $3 $4
 #src = str(sys.argv[2]) - folder to stitched images, e.g. /jukebox/LightSheetTransfer/tp/20200701_12_55_28_20170207_db_bl6_crii_rpv_01/
 #reg_ch
 #cell_ch
+#  optional - lavision or smartspim

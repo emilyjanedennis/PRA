@@ -2,10 +2,10 @@
 #
 #SBATCH -c 11                      # number of cores
 #SBATCH -t 300
-#SBATCH -o logs/transformix.out        # STDOUT #add _%a to see each array job
+#SBATCH -o logs/transformix_%j.out        # STDOUT #add _%a to see each array job
 #SBATCH -e logs/transformix_%j.err        # STDERR #add _%a to see each array job
 #SBATCH --contiguous #used to try and get cpu mem to be contigous
-#SBATCH --mem 180000
+#SBATCH --mem 80000
 
 echo "In the directory: `pwd` "
 

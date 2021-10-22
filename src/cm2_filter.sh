@@ -17,9 +17,9 @@ xvfb-run python cm2_filter.py $1 $2 $3 $4 $5 $6
 # in PRA/src
 # 1 - directory where brain(s) live
 # 2 - brainname
-# 3 - source value (suggest 3 if using princeton smartspim)
-# 4 - size 1 value (suggest 6 if at princeton using smartspim)
-# 5 - size 2 (suggest 200 if at princeton using smartspim)
+# 3 - source value 
+# 4 - size 1 value
+# 5 - size 2
 # 6 - channel ("cell" or "reg")
 # example call:
-# sbatch cm2_filter.sh "/scratch/ejdennis/cm2_brains" "j316" "3" "6" "300" "cell"
+# sbatch cm2_filter.sh "/scratch/ejdennis/cm2_brains" "j316" "20" "8" "10000" "cell"

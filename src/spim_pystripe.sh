@@ -21,4 +21,6 @@ echo "Input directory (path to stitched images):" "$1"
 echo "Path to flat.tiff file generated using 'Generate Flat' software:" "$2"
 echo "Output directory (does not need to exist):" "$3"
 
+import pystripe
+
 pystripe -i "$1" -f "$2" -o "$3"

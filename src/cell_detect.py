@@ -1,7 +1,6 @@
 import os,sys, pickle
 import numpy as np 
 #ClearMap path
-sys.path.append('/usr/people/ejdennis/.local/bin')
 sys.path.append('../ClearMap2')
 #load ClearMap modules
 #from ClearMap.Environment import *  #analysis:ignore
@@ -59,12 +58,12 @@ if __name__ == '__main__':
 	print('sysarg v output is {}'.format(sys.argv))
 
 	if sys.argv[3] == "lavision":
-		cell_detection_parameter['background_correction']['shape'] = (3,3)
-		cell_detection_parameter['shape_detection']['threshold'] = 300
-		print('/n params are k3, 300')
-	else:
 		cell_detection_parameter['background_correction']['shape'] = (5,5)
-		cell_detection_parameter['shape_detection']['threshold'] = 100
+		cell_detection_parameter['shape_detection']['threshold'] = 280
+		print('/n params are k5, 280')
+	else:
+		cell_detection_parameter['background_correction']['shape'] = (10,10)
+		cell_detection_parameter['shape_detection']['threshold'] = 390
 		print("params are k5, thresh 100")
 
 	directory = str(sys.argv[2]) 
@@ -90,9 +89,12 @@ if __name__ == '__main__':
 
 	if step == 0:
 		print("++++++++++ STEP 0 +++++++++++++")
-		# convert single z planes to stitched
-		io.delete_file(sink)
-		io.convert(source, sink, processes=None, verbose=True);
+		if os.path.exists(os.path.join(directory,"stitched.npy")):
+			print("already created stitched volume")
+		else:
+			# convert single z planes to stitched
+			io.delete_file(sink)
+			io.convert(source, sink, processes=None, verbose=True);
 
 	elif step == 1:
 		# Split into blocks

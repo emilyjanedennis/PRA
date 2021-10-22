@@ -24,3 +24,4 @@ xvfb-run python cm2_align.py $1 $2 $3 $4 $5 $6 $7 $8
 # 5- brainname e.g. "e154", default "brainname"
 # 6- flip y? 1 yes 0 no, default 0
 # 7- switch x and z? 1 yes 0 no, default yes (axial -> sagittal)
+# 8- scope, default to smartspim
