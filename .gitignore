@@ -5,7 +5,6 @@
 # Data folder
 data/*
 data/**
-notebooks/misc/connectivity/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -19,6 +18,11 @@ __pycache__/
 *.nrrd 
 **/connectivity/experiment*/**
 */connectivity/exper*/*
+notebooks/misc/connectivity/**
+
+# ClearMap2
+ClearMap2/**
+
 # Distribution / packaging
 .Python
 build/
