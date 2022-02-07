@@ -4,6 +4,7 @@
 
 # Data folder
 data/*
+data/**
 notebooks/misc/connectivity/**
 
 # Byte-compiled / optimized / DLL files
@@ -14,6 +15,10 @@ __pycache__/
 # C extensions
 *.so
 
+# allen files
+*.nrrd 
+**/connectivity/experiment*/**
+*/connectivity/exper*/*
 # Distribution / packaging
 .Python
 build/
