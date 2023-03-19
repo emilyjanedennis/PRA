@@ -18,7 +18,7 @@ optional args:
 
 via sys.argv, usually from bash or sbatch and aligns using the
 folder logic from PRA repo, if you use different folder logic
-or organizaiton, you'll need to change some of these functions
+or organization, you'll need to change some of these functions
 e.g. python 2 "/scratch/ejdennis/cm2_brains/a253/cells_642_filt.npy"
 	"/jukebox/LightSheetData/lightserv/pbibawi/pb_udisco/pb_udisco_a253/imaging_request_1/rawdata/resolution_3.6x/elastix"
 	"/scratch/ejdennis/cm2_brains/aligned_cells/" 1 1 "mPRA"
