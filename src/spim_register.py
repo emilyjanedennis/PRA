@@ -8,18 +8,18 @@ Created on Tue Jul 21 16:01:17 2020
 
 import sys
 import os
+sys.path.append("../")
 import tifffile as tif
 import numpy as np
 from utils.registration import elastix_command_line_call
 
-param_fld = "../data/rat_registration_parameter_folder"  # change if using mouse
-atl = "../data/mPRA_adj.tif"  # defaults to pra
-
+param_fld = os.path.join(os.path.dirname(os.getcwd()),"data/parameter_folder_a1b3")  # change if using mouse
+param_fld_affine = os.path.join(os.path.dirname(os.getcwd()),"data/parameter_folder_a1b1")
+atl = os.path.join(os.path.dirname(os.getcwd()),"data/mPRA.tif")
+print("atl is {}".format(atl))
 
 # takes 6 command line arguments max
-stepid = str(sys.argv[1])
-print("stepid is 1 is {}".format(str(stepid==1)))
-print("stepid is {}".format(stepid))
+stepid = int(sys.argv[1])
 src = str(sys.argv[2])  # folder to main image folder
 print("src is {}".format(src))
 
@@ -32,84 +32,64 @@ try:
 except:
     cell = False
 
-if stepid == 0:
-    print("step id is zero")
-
-    mv = os.path.join(dst, "reg__downsized_for_atlas.tif")
-    mvtiff = tif.imread(mv)
-    mvx,mvy,mvz = np.shape(mvtiff)
-    if mvz > mvx:
-        tif.imsave(mv,np.swapaxes(mvtiff,0,2))
-        print("~~~~~~~~~~~~~~~ SWAPPED AXES ~~~~~~~~~~~~~")
-    #print("\nPath to downsized vol for registration to atlas: %s" % mv)
-    fx = atl
-    print("\nPath to atlas: %s" % fx)
-    elsrc=os.path.join(os.path.dirname(src),"elastix")
-    print("elsrc is {}".format(elsrc))
-    if not os.path.exists(elsrc):
-        os.mkdir(elsrc)
-    out = os.path.join(os.path.dirname(elsrc), "reg_to_atl")
-    if not os.path.exists(out):
-        os.mkdir(out)
-
-    params = [os.path.join(param_fld, xx) for xx in os.listdir(param_fld)]
-    # run
-    print("++++++++++++ {} TO {} IN {}+++++++++++".format(mv,fx,out))
-    e_out, transformfiles = elastix_command_line_call(fx, mv, out, params)
-
-    if cell:
-        # cell vol to registration vol
-        print("\nCell channel specified: %s" % cell)
-        mv = os.path.join(src, "cell__downsized_for_atlas.tif")
-        fx = os.path.join(src, "reg__downsized_for_atlas.tif")
-
-        mvtiff = tif.imread(mv)
-        mvx,mvy,mvz	= np.shape(mvtiff)
-        if mvz > mvx:
-            tif.imsave(mv,np.swapaxes(mvtiff,0,2))
-            print("~~~~~~~~~~~~~~~ SWAPPED cell mv AXES	~~~~~~~~~~~~~")
-
-        out = os.path.join(elsrc, "cell_to_reg")
-        if not os.path.exists(out):
-            os.mkdir(out)
-
-        params = [os.path.join(param_fld, xx) for xx in os.listdir(param_fld)][0]
-        # run
-        print("------------------- {} TO {} IN {} ------------------".format(mv,fx,out))
-        e_out, transformfiles = elastix_command_line_call(fx, mv, out, params)
-
+# sometimes these are one level up
+if os.path.exists(os.path.join(src,'reg__downsized_for_atlas.tif')):
+    output_src = src
+elif os.path.exists(os.path.join(os.path.dirname(src),'reg__downsized_for_atlas.tif')):
+    output_src = os.path.dirname(src)
 else:
-    print("stepid is one")
-    # atlas to registration vol
-    # inverse transform
-    fx = os.path.join(src, "reg__downsized_for_atlas.tif")
-    mv = atl
-    fxtiff = tif.imread(fx)
-    fxx,fxy,fxz     = np.shape(fxtiff)
-    if fxz > fxx:
-        tif.imsave(fx,np.swapaxes(fxtiff,0,2))
-    print("\nPath to downsized vol for inverse registration to atlas: %s" % fx)
-    print("\nPath to atlas: %s" % mv)
-    out = os.path.join(src, "elastix_inverse_transform")
+    output_src = os.path.dirname(os.path.dirname(src))
+
+elsrc=os.path.join(os.path.dirname(src),"elastix")
+print("elsrc is {}".format(elsrc))
+if not os.path.exists(elsrc):
+    os.mkdir(elsrc)
+
+if stepid == 0:
+    print("step id is zero, reg -> atl")
+    mv = os.path.join(output_src, "reg__downsized_for_atlas.tif")
+    fx = atl
+    out = os.path.join(elsrc, "reg_to_atl")
     if not os.path.exists(out):
         os.mkdir(out)
+    params = [os.path.join(param_fld, xx) for xx in os.listdir(param_fld)]
+    print("++++++++++++ {} TO {} IN {}+++++++++++".format(mv,fx,out))
 
+elif stepid == 1:
+    print("stepid is 1, atl -> reg")
+    mv = atl
+    fx = os.path.join(output_src, "reg__downsized_for_atlas.tif")
+    out = os.path.join(elsrc, "atl_to_reg")
+    if not os.path.exists(out):
+        os.mkdir(out)
     params = [os.path.join(param_fld, xx) for xx in os.listdir(param_fld)]
     # run
-    print("------------------- {} TO {} IN {} +++++++++++++++++++++".format(mv,fx,out))
-    e_out, transformfiles = elastix_command_line_call(fx, mv, out, params)
+    print("------------------- {} TO {} IN {} ------------------".format(mv,fx,out))        
 
-    if cell:
-        #cell to reg inverse
-        fx=os.path.join(src,"cell__downsized_for_atlas.tif")
-        mv=os.path.join(src, "reg__downsized_for_atlas.tif")
-        fxtiff = tif.imread(fx)
-        fxx,fxy,fxz     = np.shape(fxtiff)
-        if fxz > fxx:
-            tif.imsave(fx,np.swapaxes(fxtiff,0,2))
-        out = os.path.join(src, "reg_to_cell")
-        if not os.path.exists(out):
-            os.mkdir(out)
-        params=[os.path.join(param_fld, xx) for xx in os.listdir(param_fld)][0]
-        print("------------------- {} TO {} IN {} +++++++++++++++++++++".format(mv,fx,out))
-        e_out, transformfiles = elastix_command_line_call(fx, mv, out, params)
+elif stepid == 2:
+    print("stepid is 2, reg -> cell")
+    fx = os.path.join(output_src, "cell__downsized_for_atlas.tif")
+    mv = os.path.join(output_src, "reg__downsized_for_atlas.tif")
+    out = os.path.join(elsrc, "cell_to_reg")
+    if not os.path.exists(out):
+        os.mkdir(out)
+    params = [os.path.join(param_fld_affine, xx) for xx in os.listdir(param_fld_affine)]
+    # run
+    print("------------------- {} TO {} IN {} ------------------".format(mv,fx,out))
+
+elif stepid == 3:
+    print("stepid is 3, cell -> reg")
+    fx=os.path.join(output_src,"cell__downsized_for_atlas.tif")
+    mv=os.path.join(output_src, "reg__downsized_for_atlas.tif")
+    out = os.path.join(elsrc, "reg_to_cell")
+    if not os.path.exists(out):
+        os.mkdir(out)
+        
+    params=[os.path.join(param_fld_affine, xx) for xx in os.listdir(param_fld_affine)]
+    print("------------------- {} TO {} IN {} +++++++++++++++++++++".format(mv,fx,out))
+else:
+    print(" STEP ID WAS NOT VALID ")
+
+
+e_out, transformfiles = elastix_command_line_call(fx, mv, out, params)
+

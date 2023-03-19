@@ -1,8 +1,7 @@
 import os,sys, pickle
 import numpy as np 
 #ClearMap path
-#sys.path.append('/usr/people/ejdennis/.local/bin')
-
+sys.path.append('/usr/people/ejdennis/.local/bin')
 sys.path.append('../ClearMap2')
 #load ClearMap modules
 #from ClearMap.Environment import *  #analysis:ignore
@@ -14,6 +13,7 @@ import ClearMap.ImageProcessing.Experts.Cells as cells
 import ClearMap.ParallelProcessing.BlockProcessing as bp
 import ClearMap.Alignment.Resampling as res
 
+print('done loading workspace')
 cell_detection_parameter = cells.default_cell_detection_parameter.copy()
 cell_detection_parameter['illumination'] = None
 cell_detection_parameter['maxima_detection']['valid']=True # keep this on if you want to combine results from multiple blocks
@@ -64,10 +64,11 @@ if __name__ == '__main__':
 		print('/n params are k3, 300')
 	else:
 		cell_detection_parameter['background_correction']['shape'] = (5,5)
-		cell_detection_parameter['shape_detection']['threshold'] = 130
-		print('/n params are k5, 130')
+		cell_detection_parameter['shape_detection']['threshold'] = 100
+		print("params are k5, thresh 100")
 
-	directory = str(sys.argv[2]) #e.g. os.path.join('/scratch/ejdennis/cm2_brains/j317/ch_488/')
+	directory = str(sys.argv[2]) 
+	#e.g. os.path.join('/scratch/ejdennis/cm2_brains/j317/ch_488/')
 
 	expression_raw      = 'Z<Z,4>.tif'    
 	expression_auto	= 'Z<Z,4>.tif'
@@ -94,7 +95,7 @@ if __name__ == '__main__':
 		# Split into blocks
 		print("splitting into blocks")
 		blocks = bp.split_into_blocks(ws.source('stitched'), 
-			processes=12, 
+			processes=11, 
 			axes=[2], # chunks along z
 			size_min=5,
 			size_max=20, 
@@ -117,8 +118,11 @@ if __name__ == '__main__':
 		for block_file_base in list_of_blocks:
 			block_file = os.path.join(directory,'final_blocks',block_file_base)
 			with open(block_file,'rb') as file_to_load:
-				block_result = pickle.load(file_to_load)
-				block_result_list.append(block_result)
+				try:
+					block_result = pickle.load(file_to_load)
+					block_result_list.append(block_result)
+				except:
+					print('could not load {}'.format(file_to_load))
 		final_results = np.vstack([np.hstack(r) for r in block_result_list]) # merges results into a single array
 		header = ['x','y','z'];
 		dtypes = [int, int, int];

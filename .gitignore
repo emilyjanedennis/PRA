@@ -4,6 +4,7 @@
 
 # Data folder
 data/*
+data/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -12,6 +13,15 @@ __pycache__/
 
 # C extensions
 *.so
+
+# allen files
+*.nrrd 
+**/connectivity/experiment*/**
+*/connectivity/exper*/*
+notebooks/misc/connectivity/**
+
+# ClearMap2
+ClearMap2/**
 
 # Distribution / packaging
 .Python
