@@ -25,13 +25,9 @@ The goals of this repo are:
 This code builds heavily off of BrainPipe from Tom Pisano, Zahra Dahanderawala, and Austin Hoag. It also benefitted greatly from Nick Del Grosso and BrainGlobe.
 
 ## Citations
-- BrainPipe
-- BrainGlobe
-- Tom Pisano
-
-
-
-
+- BrainPipe https://github.com/PrincetonUniversity/BrainPipe
+- BrainRender https://www.biorxiv.org/content/10.1101/2020.02.23.961748v2
+- Pisano _et al_ 2022 https://www.sciencedirect.com/science/article/pii/S2666166722001691
 
 ## *INSTALLATION INSTRUCTIONS*:
 * Note that this currently has only been tested on Linux (Ubuntu 16 and 18). SimpleElastix installation has also been tested in Windows 10 by Adrian.
