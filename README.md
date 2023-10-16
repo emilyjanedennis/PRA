@@ -10,15 +10,7 @@ The goals of this repo are:
 1. Clone this repo
 2. Generate the lightsheet environment
    - in PRA, `conda env create -f environment.yaml`
-
-3. Activate the ClearMap2 git module
-    - To learn more aboud submodules, see [here](https://gist.github.com/gitaarik/8735255)
-    - To make that code 'appear' in the repo use
-    `git submodule update --init --recursive`
-    to update it
-    `git submodule update --recursive --remote`
-
-4. If not at Princeton, install Elastix
+3. If not at Princeton, install Elastix
     - see the end of this document for tips
 
 ## Acknowledgements
@@ -95,36 +87,18 @@ If there are errors in these steps, usually it's
     2. elastix isn't installed properly (try `which elastix`) or is missing from bashrc
     3. terastitcher isn't installed properly (try `which terastitcher`) or is missing from bashrc
 **things to do before running**
-- edit run_tracing.py to poit to the appropriate directories and use the correct parameters for your imaging. especially pay attention to:
-- systemdirectory
-  - if you haven't edited directorydeterminer() appropriately, nothing will work
-- inputdictionary
-  - point to the raw images file, they should be in the format like
+- in `src/utils/io.py`, edit point to the appropriate directories and use the correct parameters for your imaging. especially pay attention to:
+- line 125: systemdirectory
+  - if you haven't edited directorydeterminer() appropriately, nothing will work. If at Princeton and running on spock, you do not need to change anything.
+
+- in `src/utils/imageprocessing.py` point to the raw images file, they should be in the format like
     `10-50-16_UltraII_raw_RawDataStack[00 x 00]_C00_xyz-Table Z0606_UltraII Filter0000.ome.tif`
-  - if the format of your images differs, you'll need to edit the regex expression called in run_tracing (find it in tools/imageprocessing/preprocessing under `def regex_determiner`)
-  - if you have more than one channel imaged in this folder, add channels. Examples:
-    - one channel in the folder: `[["regch", "00"]]`
-    - two chhannels in the folder `[["regch", "00"], ["cellch","01"]]`
-- under params edit:
-  - outputdirectory
-        - give the path where you want things saved. I usually make it the animal's name (e.g. E001) and store temporarily in scratch `scratch/ejdennis/e001`   or more permanently ` /LightSheetData/brodyatlas/processed/e001`
-  - xyz_scale
-    - usually either (5,5,10) for data collected with the 1.3x objective or (1.63,1.63,10) if collected with the 4X objective
-  - stitchingmethod
-    - I keep this as "terastitcher"
-  - AtlasFile
-    - point to the file you want to register the brain to - usually this will be either the Waxholm MRI atlas `/jukebox/LightSheetData/brodyatlas/atlas/for_registration_to_lightsheet/WHS_SD_rat_T2star_v1.01_atlas.tif` or our atlas
-  - annotationfile
-    - the annotation file that describes the above brain, e.g. `/jukebox/LightSheetData/brodyatlas/atlas/for_registration_to_lightsheet/WHS_SD_rat_atlas_v3_annotation.tif`
-  - resizefactor
-    - usually 5 for 4x images, 3 for 1.3x images
-  - slurmjobfactor
-    - we keep this at 50, it's the number of files processed in step1 of run_tracing and slurm_files/step1.sh
-  - transfertype
-    - MAKE SURE THIS IS "copy" or else your data may get deleted, there are backups, but it's really annoying. Avoid at all costs, you can always clean up and delete things later.
-  - you'll also want to check that in the __main__ run the systemdirectory points to your use case. For example, my scripts see if I'm running locally ("/home/emilyjanedennis/")
+  - if the format of your images differs, you'll need to edit the regex expression in `utils/imageprocessing.py` under `def regex_determiner`, line 188. I found this https://www.dataquest.io/blog/regex-cheatsheet/ to be helpful.
 
 **to run**
+if you're on a local workstation, use
+
+
 if on spock, *after editing run_tracing.py*, go to your rat_BrainPipe folder, and run
     `sbatch slurm_scripts/step0.sh`
 then go to your outputdirectory (e.g. /scratch/ejdennis/e001) that you specified in run_tracing.py
@@ -137,7 +111,7 @@ run the pipeline from this folder (this is useful because it allows you to keep 
 That's all! If everything runs successfully, you'll end up with a param_dict.p, LogFile.txt, two new resized tiffstacks, a mostly empty folder called injections, a folder called full_sizedatafld with the individual stitched z planes for each channel, and an elastix folder with the brains warped to the atlas defined in run_tracing.py AtlasFile
 
 ### 2. Make an atlas
-If you have a group of stitched brains (e.g. e001/full_sizedatafld, e002/full_sizedatafld, and e003/full_sizedatafld), you can make an average brain for an atlas. Our rat atlas is for our lab, and therefore is made of only male (defined operationally by external genitalia) brains. However, we wanted to test our results and publish including female (similarly operationally defined) brains. Therefore we perfused, cleared, and imaged three female brains and created an atlas.
+If you have a group of stitched brains (e.g. e001/full_sizedatafld, e002/full_sizedatafld, and e003/full_sizedatafld), you can make an average brain for an atlas. Our rat atlas is for our lab, and therefore is made of only male (defined operationally by external genitalia) brains. However, we wanted to test our results and publish including female (similarly operationally defined) brains. Therefore we perfused, cleared, and imaged four female brains and created an atlas.
 
 To make your own atlas, use the  `rat_atlas` folder.
   1. Edit `mk_ls_atl.sh` amd `cmpl_atl.sh` to use your preferred slurm SBATCH headings
@@ -167,3 +141,26 @@ if you have already "Made a stitched whole-brain", you may already have your bra
     - change the mv to be your "moving image" (the brain tiffstack) and fx to your "fixed image" (the atlas volume)
     - change the output directory to where you want your elastix files and newly aligned tiff saved
    - change the outputfilename - this will be a resized mv file that is 140% the size of fx and is what is actually used for the alignment
+
+
+===========
+to delete
+
+- under params edit:
+  - outputdirectory
+        - give the path where you want things saved. I usually make it the animal's name (e.g. E001) and store e.g. ` /LightSheetData/brodyatlas/processed/e001`
+  - xyz_scale
+    - usually either (5,5,10) for data collected with the 1.3x objective or (1.63,1.63,10) if collected with the 4X objective. this is the x, y, and z microns measurements from your image acquisition
+  - stitchingmethod
+    - If you use terastitcher, say "terastitcher"
+  - AtlasFile
+    - point to the file you want to register the brain to - usually this will be either the Waxholm MRI atlas `/jukebox/LightSheetData/brodyatlas/atlas/for_registration_to_lightsheet/WHS_SD_rat_T2star_v1.01_atlas.tif` or our atlas `/brody/lightsheet/atlasdir/PRA.tif`
+  - annotationfile
+    - the annotation file that describes the above brain, e.g. `/jukebox/LightSheetData/brodyatlas/atlas/for_registration_to_lightsheet/WHS_SD_rat_atlas_v3_annotation.tif`
+  - resizefactor
+    - usually 5 for 4x images, 3 for 1.3x images. This is how many fold smaller the final images will be
+  - slurmjobfactor
+    - we keep this at 50, it's the number of files processed in step1 of run_tracing and slurm_files/step1.sh
+  - transfertype
+    - MAKE SURE THIS IS "copy" or else your data may get deleted, there are backups, but it's really annoying. Avoid at all costs, you can always clean up and delete things later.
+  - you'll also want to check that in the __main__ run the systemdirectory points to your use case. For example, my scripts see if I'm running locally ("/home/emilyjanedennis/")
