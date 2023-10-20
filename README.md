@@ -135,32 +135,17 @@ To make your own atlas, use the  `rat_atlas` folder.
     - in main, edit variables to match step2_compile_atlas
   7. Either locally or on the cluster head node (module load anacondapy/5.3.1), use export SLURM_ARRAY_TASK_ID=0, activate the lightsheet conda environment, and run `step3_make_median.py`
 
-
 ### 3. Put a brain in atlas space
 if you have already "Made a stitched whole-brain", you may already have your brain in atlas space, depending on what you specified as the AtlasFile. If you have a tiff stack and you want to register it to an atlas file, you can use `elastix_to_pra.py`
     - change the mv to be your "moving image" (the brain tiffstack) and fx to your "fixed image" (the atlas volume)
     - change the output directory to where you want your elastix files and newly aligned tiff saved
    - change the outputfilename - this will be a resized mv file that is 140% the size of fx and is what is actually used for the alignment
 
+### 4. Put a third-party atlas/annotation into your atlas space (assuming PRA.tif for this description, and assuming you're using the Princeton cluster for examples, so edit files/paths accordingly for your system)
+   0. Prep the files: you'll need an atlas file and an annotations file (atlas = looks like a brain, annotations = has a brain shape but has large chunks of it are different values, corresponding to brain regions). There also should be a labels file, usually a json or csv that tells you what the values in the annotations file mean. (e.g. value 10=olfactory bulb). Make sure the atlas and annotation files have these properties: (a) they are sagittally sectioned (b) have a black background (c) have approximately the same 'empty space' as your atlas (e.g. you don't want a huge amount of black/0s behind the spinal cord/cerebellum if that's not in your atlas space). and (d) mask any features not in your atlas. For example, for Waxholm Space Atlas (WHS) I used ImageJ BioFormat Importer to import the .nii files, reslice and transform to sagittal (with dorsal cortex on left) and crop. I did this for the annotations while recording a macro then applied that macro to the atlas file so they were treated identically, and then saved them as tiffs. I then used python to load the new sagittal annotation tif, set several values to 0 (like optic nerve, cochlea, etc that are not in our lightsheet-based PRA atlas) and saved out as WHS_masked_annotations.tif I then set all non-zero values to 1, and saved this as WHS_mask.tif. I then loaded the new sagittal atlas tiff, multiplied it by the WHS_mask, and saved as WHS_masked_atlas.tif.
+   2. Make sure you have this repo cloned, and cd into PRA/src
+   3. run general_elastix.sh example: `sbatch general_elastix.sh "/jukebox/brody/lightsheet/elastix_params/" "['/jukebox/brody/lightsheet/volumes/WHS_masked_atlas.tif']" "/jukebox/brody/lightsheet/atlasdir/PRA.tif" "/scratch/ejdennis/lightsheet" "1.4"` this will align WHS_masked_atlas.tif to mPRA.tif using the parameter files in elastix_params and a multiplication value of 1.4. 1.4 means that the moving image (WHS_masked_atlas.tif) will be resized to 140% the size of the fixed image. This empirically works well for getting good alignments without too much fuss. Outputs will be saved in /scratch/ejdennis/lightsheet/WHS_masked_atlas_to_PRA
+   4. check the alignment! If you have issues, try changing the WHS_masked_atlas.tif file (more cropping or changing intensity/depth of pixels, etc.) Read more in Elastix documentation. Usually this just works.
+   5. run general_transformix.sh example: `sbatch general_transformix.sh "/jukebox/brody/lightsheet/volumes/WHS_masked_atlas_to_fPRA" "/jukebox/brody/lightsheet/atlasdir/fPRA.tif" "/jukebox/brody/lightsheet/volumes/WHS_masked_annotations.tif" "/scratch/ejdennis/lightsheet/WHS_$` this will use the Transform files in WHS_masked_atlas_to_PRA to transform WHS_masked_annotations.tif into PRA space
+   6. check the alignment! If you have issues, make sure the resize/mult value is correct (checking the shape of resized.tif is a good first step, if mult = 1.4 (the default) then all axes should be 1.4x the atlas in all dimensions, and the same as the enlarged tiff created in step 3)
 
-===========
-to delete
-
-- under params edit:
-  - outputdirectory
-        - give the path where you want things saved. I usually make it the animal's name (e.g. E001) and store e.g. ` /LightSheetData/brodyatlas/processed/e001`
-  - xyz_scale
-    - usually either (5,5,10) for data collected with the 1.3x objective or (1.63,1.63,10) if collected with the 4X objective. this is the x, y, and z microns measurements from your image acquisition
-  - stitchingmethod
-    - If you use terastitcher, say "terastitcher"
-  - AtlasFile
-    - point to the file you want to register the brain to - usually this will be either the Waxholm MRI atlas `/jukebox/LightSheetData/brodyatlas/atlas/for_registration_to_lightsheet/WHS_SD_rat_T2star_v1.01_atlas.tif` or our atlas `/brody/lightsheet/atlasdir/PRA.tif`
-  - annotationfile
-    - the annotation file that describes the above brain, e.g. `/jukebox/LightSheetData/brodyatlas/atlas/for_registration_to_lightsheet/WHS_SD_rat_atlas_v3_annotation.tif`
-  - resizefactor
-    - usually 5 for 4x images, 3 for 1.3x images. This is how many fold smaller the final images will be
-  - slurmjobfactor
-    - we keep this at 50, it's the number of files processed in step1 of run_tracing and slurm_files/step1.sh
-  - transfertype
-    - MAKE SURE THIS IS "copy" or else your data may get deleted, there are backups, but it's really annoying. Avoid at all costs, you can always clean up and delete things later.
-  - you'll also want to check that in the __main__ run the systemdirectory points to your use case. For example, my scripts see if I'm running locally ("/home/emilyjanedennis/")
