@@ -14,6 +14,8 @@ module load elastix/4.8
 echo $1
 echo $2
 echo $3
-xvfb-run python general_transformix.py $1 $2 $3
+echo $4
+echo $5
+xvfb-run python general_transformix.py $1 $2 $3 $4 $5
 
 

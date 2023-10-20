@@ -7,11 +7,12 @@ note this is often backwards of people's intuition! Example: if you want to take
 
 INPUTS: 
 1. elastix_files: a string containing a full path to a folder of elastix files
-2. input_tif: a string containing a full path to a tiff or tif file. 
-3. output_dir: a string containing a full path to a directory where you want your results to be stored
+2. fixed_tif: a string containing a full path to the fixed image (i.e. what file you want to align TO)
+3. input_tif: a string containing a full path to a tiff or tif file. 
+4. output_dir: a string containing a full path to a directory where you want your results to be stored
 
 OPTIONAL INPUTS:
-4. mult: defaults to 1.4, use whatever multiplier was used for the original alignment
+5. mult: defaults to 1.4, use whatever multiplier was used for the original alignment
 OUTPUTS:
 a directory full of outputs, most useful is the result.tif file produced
 
@@ -40,7 +41,14 @@ if __name__ == "__main__":
             print("the first input must be a string containing a full path to a folder of elastix files")
 
     try:
-        input_tif = str(sys.argv[2])
+        fixed_tif = str(sys.argv[2])
+        if os.path.isfile(fixed_tif):
+            print("using fixed tiff: {}".format(fixed_tif))
+    except:
+        print("the second input must be a string with a full path to the fixed tiff volume")
+ 
+    try:
+        input_tif = str(sys.argv[3])
         if os.path.isfile(input_tif):
             if "tif" in input_tif:
                 print("warping {} from fixed volume space to moving volume space, usually formatted as mv_to_fx, using this folder: {}".format(tif_in_fixed_volume,elastix_files))
@@ -50,21 +58,25 @@ if __name__ == "__main__":
         print("second input must be a string containing a full path to a tiff or tif file")
 
     try:
-        output_dir = str(sys.argv[3])
+        output_dir = str(sys.argv[4])
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
     except:
         print("third input must be a string containing a full path to a folder you'd like the outputs stored in, and must exist or have an existing parent directory")
 
-    if len(sys.argv) > 4:
+    if len(sys.argv) > 5:
         try:
-            mult=float(sys.argv[4])
+            mult=float(sys.argv[5])
         except:
             print("mult {} could not be converted to a float, using default 1.4".format(mult))
             mult=1.4
     else:
         mult=1.4
-    tif_resized=zoom(tif.imread(input_tif),mult,order=0,mode='nearest')
+    fixed=tif.imread(fixed_tif)
+    moving = tif.imread(input_tif)
+    zf, yf, xf = (fixed.shape[0]/moving.shape[0])*mult, (fixed.shape[1]/moving.shape[1])*mult, (fixed.shape[2]/moving.shape[2])*mult
+    print("\nzooming...")
+    tif_resized= zoom(moving, (zf, yf, xf), order=0,mode='nearest')
     tif.imsave(os.path.join(output_dir,"resized.tif"),tif_resized)
 
     transformfiles=[]
@@ -72,8 +84,10 @@ if __name__ == "__main__":
     for file in os.listdir(elastix_files):
             if "TransformParam" in file:
                 transformfiles.append(os.path.join(elastix_files, file))
+            transformfiles.sort()
             print("transformfiles {}".format(transformfiles))
 
     # now use transformix
     transformix_command_line_call(os.path.join(output_dir,"resized.tif"), output_dir, transformfiles[-1])
+
 
