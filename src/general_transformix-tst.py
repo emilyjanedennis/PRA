@@ -78,24 +78,6 @@ if __name__ == "__main__":
     print("shapes of fixed, moving, then resized")
     print(np.shape(fixed))
     print(np.shape(moving))
-    zf=(fixed.shape[0]/moving.shape[0])*mult
-    xf=(fixed.shape[1]/moving.shape[1])*mult
-    yf=(fixed.shape[2]/moving.shape[2])*mult
-    print(zf,xf,yf)
-    tif_resized= zoom(moving, (zf,yf,xf), order=0,mode='nearest')
+    tif_resized= zoom(moving, mult, order=0,mode='nearest')
     print(np.shape(tif_resized))
-    tif.imsave(os.path.join(output_dir,"resized.tif"),tif_resized)
-
-    transformfiles=[]
-
-    for file in os.listdir(elastix_files):
-            if "TransformParam" in file:
-                transformfiles.append(os.path.join(elastix_files, file))
-            transformfiles.sort()
-            print("transformfiles {}".format(transformfiles))
-
-    # now use transformix
-    transformix_command_line_call(os.path.join(output_dir,"resized.tif"),output_dir,transformfiles[-1])
-
-
 
