@@ -19,3 +19,6 @@ echo $5
 xvfb-run python general_transformix.py $1 $2 $3 $4 $5
 
 
+# example: sbatch general_transformix.sh "/jukebox/brody/lightsheet/volumes/WHS_masked_atlas_to_fPRA" "/jukebox/brody/lightsheet/volumes/fPRA.tif" "/jukebox/brody/lightsheet/volumes/WHS_masked_annotations.tif" "/scratch/ejdennis/lightsheet/WHS_v4_anns_to_fPRA"
+# this will use the Transform files in .../WHS_masked_atlas_to_fPRA (where WHS_masked_atlas.tif was aligned with general_elastix.sh to fPRA.tif)
+# to transform WHS_masked_annotations.tif into fPRA space

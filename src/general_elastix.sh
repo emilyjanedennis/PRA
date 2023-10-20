@@ -20,3 +20,7 @@ echo $6
 xvfb-run python general_elastix.py $1 $2 $3 $4 $5 $6
 
 
+# example: sbatch general_elastix.sh "/jukebox/brody/lightsheet/elastix_params/" "['/jukebox/brody/lightsheet/volumes/WHS_masked_atlas
+.tif']" "/jukebox/brody/lightsheet/atlasdir/mPRA.tif" "/scratch/ejdennis/lightsheet" "1.4" ""
+# this will align WHS_mastked_atlas.tif to mPRA.tif using the parameters in elastix_params
+# it will save results in /scratch/ejdennis/lightsheet and use a 1.4x multiplier (making the moving volume 140% the size of the fixed volume)
