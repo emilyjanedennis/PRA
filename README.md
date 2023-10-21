@@ -13,10 +13,15 @@ The goals of this repo are:
 3. If not at Princeton, install Elastix
     - see the end of this document for tips
 
+## Data
+Even our downsampled files are large, so we have deposited the main files you'll need at figshare here: https://figshare.com/articles/dataset/Princeton_RAtlas_PRA_/24207429
+If you require the raw data (which is hundreds of Gb to some Tb per brain) email the authors and we will get you connected to Princeton IT to get a Globus link for accessing those data.
+
 ## Acknowledgements
 This code builds heavily off of BrainPipe from Tom Pisano, Zahra Dahanderawala, and Austin Hoag. It also benefitted greatly from Nick Del Grosso and BrainGlobe.
 
 ## Citations
+- Our protocol https://en.bio-protocol.org/en/bpdetail?id=4854&type=0 
 - BrainPipe https://github.com/PrincetonUniversity/BrainPipe
 - BrainRender https://www.biorxiv.org/content/10.1101/2020.02.23.961748v2
 - Pisano _et al_ 2022 https://www.sciencedirect.com/science/article/pii/S2666166722001691
@@ -25,9 +30,7 @@ This code builds heavily off of BrainPipe from Tom Pisano, Zahra Dahanderawala, 
 * Note that this currently has only been tested on Linux (Ubuntu 16 and 18). SimpleElastix installation has also been tested in Windows 10 by Adrian.
 * If on a cluster - Elastix needs to be compiled on the cluster - this was challenging for IT here and suspect it will be for your IT as well. If at Princeton, elastix is on spock
 
-
 ### Install simpleelastix
-
 *_For Windows_*, Follow the instructions on [read the docs](https://simpleelastix.readthedocs.io/GettingStarted.html#compiling-on-windows).
 Use the command line step (step 3) and skip the IDE steps 4 and 5.  If the Python wrapping fails, see this [known issue](https://github.com/SuperElastix/SimpleElastix/issues/243).
 
@@ -72,7 +75,7 @@ If on the cluster, and typing which terastitcher can't find terastitcher, try ad
 export PATH="/usr/people/pnilsadmin/TeraStitcher-Qt4-standalone-1.10.11-Linux/bin$PATH"
 ```
 
-If on a local Ubuntu machine also install elastix (see section above), xvfb, Terastitcher:
+### If on a local Ubuntu machine also install elastix (see section above), xvfb, Terastitcher:
 
 ```
 $ sudo apt-get install xvfb
@@ -136,15 +139,13 @@ To make your own atlas, use the  `rat_atlas` folder.
   7. Either locally or on the cluster head node (module load anacondapy/5.3.1), use export SLURM_ARRAY_TASK_ID=0, activate the lightsheet conda environment, and run `step3_make_median.py`
 
 ### 3. Put a brain in atlas space
-if you have already "Made a stitched whole-brain", you may already have your brain in atlas space, depending on what you specified as the AtlasFile. If you have a tiff stack and you want to register it to an atlas file, you can use `elastix_to_pra.py`
-    - change the mv to be your "moving image" (the brain tiffstack) and fx to your "fixed image" (the atlas volume)
-    - change the output directory to where you want your elastix files and newly aligned tiff saved
-   - change the outputfilename - this will be a resized mv file that is 140% the size of fx and is what is actually used for the alignment
+- run general_elastix.sh example: `sbatch general_elastix.sh "/jukebox/brody/lightsheet/elastix_params/" "['/jukebox/brody/lightsheet/volumes/brain.tif']" "/jukebox/brody/lightsheet/atlasdir/PRA.tif" "/scratch/ejdennis/lightsheet" "1.4"` this will align brain.tif to PRA.tif using the parameter files in elastix_params and a multiplication value of 1.4. 1.4 means that the moving image (WHS_masked_atlas.tif) will be resized to 140% the size of the fixed image. This empirically works well for getting good alignments without too much fuss. Outputs will be saved in /scratch/ejdennis/lightsheet/brain_to_PRA
+   4. check the alignment! If you have issues, try changing the WHS_masked_atlas.tif file (more cropping or changing intensity/depth of pixels, etc.) Read more in Elastix documentation. Usually this just works.
 
 ### 4. Put a third-party atlas/annotation into your atlas space (assuming PRA.tif for this description, and assuming you're using the Princeton cluster for examples, so edit files/paths accordingly for your system)
    0. Prep the files: you'll need an atlas file and an annotations file (atlas = looks like a brain, annotations = has a brain shape but has large chunks of it are different values, corresponding to brain regions). There also should be a labels file, usually a json or csv that tells you what the values in the annotations file mean. (e.g. value 10=olfactory bulb). Make sure the atlas and annotation files have these properties: (a) they are sagittally sectioned (b) have a black background (c) have approximately the same 'empty space' as your atlas (e.g. you don't want a huge amount of black/0s behind the spinal cord/cerebellum if that's not in your atlas space). and (d) mask any features not in your atlas. For example, for Waxholm Space Atlas (WHS) I used ImageJ BioFormat Importer to import the .nii files, reslice and transform to sagittal (with dorsal cortex on left) and crop. I did this for the annotations while recording a macro then applied that macro to the atlas file so they were treated identically, and then saved them as tiffs. I then used python to load the new sagittal annotation tif, set several values to 0 (like optic nerve, cochlea, etc that are not in our lightsheet-based PRA atlas) and saved out as WHS_masked_annotations.tif I then set all non-zero values to 1, and saved this as WHS_mask.tif. I then loaded the new sagittal atlas tiff, multiplied it by the WHS_mask, and saved as WHS_masked_atlas.tif.
    2. Make sure you have this repo cloned, and cd into PRA/src
-   3. run general_elastix.sh example: `sbatch general_elastix.sh "/jukebox/brody/lightsheet/elastix_params/" "['/jukebox/brody/lightsheet/volumes/WHS_masked_atlas.tif']" "/jukebox/brody/lightsheet/atlasdir/PRA.tif" "/scratch/ejdennis/lightsheet" "1.4"` this will align WHS_masked_atlas.tif to mPRA.tif using the parameter files in elastix_params and a multiplication value of 1.4. 1.4 means that the moving image (WHS_masked_atlas.tif) will be resized to 140% the size of the fixed image. This empirically works well for getting good alignments without too much fuss. Outputs will be saved in /scratch/ejdennis/lightsheet/WHS_masked_atlas_to_PRA
+   3. run general_elastix.sh example: `sbatch general_elastix.sh "/jukebox/brody/lightsheet/elastix_params/" "['/jukebox/brody/lightsheet/volumes/WHS_masked_atlas.tif']" "/jukebox/brody/lightsheet/atlasdir/PRA.tif" "/scratch/ejdennis/lightsheet" "1.4"` this will align WHS_masked_atlas.tif to PRA.tif using the parameter files in elastix_params and a multiplication value of 1.4. 1.4 means that the moving image (WHS_masked_atlas.tif) will be resized to 140% the size of the fixed image. This empirically works well for getting good alignments without too much fuss. Outputs will be saved in /scratch/ejdennis/lightsheet/WHS_masked_atlas_to_PRA
    4. check the alignment! If you have issues, try changing the WHS_masked_atlas.tif file (more cropping or changing intensity/depth of pixels, etc.) Read more in Elastix documentation. Usually this just works.
    5. run general_transformix.sh example: `sbatch general_transformix.sh "/jukebox/brody/lightsheet/volumes/WHS_masked_atlas_to_fPRA" "/jukebox/brody/lightsheet/atlasdir/fPRA.tif" "/jukebox/brody/lightsheet/volumes/WHS_masked_annotations.tif" "/scratch/ejdennis/lightsheet/WHS_$` this will use the Transform files in WHS_masked_atlas_to_PRA to transform WHS_masked_annotations.tif into PRA space
    6. check the alignment! If you have issues, make sure the resize/mult value is correct (checking the shape of resized.tif is a good first step, if mult = 1.4 (the default) then all axes should be 1.4x the atlas in all dimensions, and the same as the enlarged tiff created in step 3)
