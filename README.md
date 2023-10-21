@@ -18,7 +18,7 @@ Even our downsampled files are large, so we have deposited the main files you'll
 If you require the raw data (which is hundreds of Gb to some Tb per brain) email the authors and we will get you connected to Princeton IT to get a Globus link for accessing those data.
 
 ## Acknowledgements
-This code builds heavily off of BrainPipe from Tom Pisano, Zahra Dahanderawala, and Austin Hoag. It also benefitted greatly from Nick Del Grosso and BrainGlobe.
+This code builds heavily off of BrainPipe from Tom Pisano, Zahra Dahanerawala, and Austin Hoag. It also benefitted greatly from Nick Del Grosso and BrainGlobe.
 
 ## Citations
 - Our protocol https://en.bio-protocol.org/en/bpdetail?id=4854&type=0 
