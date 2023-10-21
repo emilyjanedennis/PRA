@@ -82,9 +82,9 @@ if __name__ == "__main__":
     xf=round(fixed.shape[1]*mult)
     yf=round(fixed.shape[2]*mult)
     print(zf,xf,yf)
-    tif_resized= resize(moving, (zf,xf,yf))
-    print(np.shape(tif_resized))
-    tif.imsave(os.path.join(output_dir,"resized.tif"),tif_resized)
+    tif_resized= resize(moving, (zf,xf,yf),preserve_range=True)
+    print("if you have issues with the output, check these numbers carefully. first the shape of the resized tiff {} and then the max value of the resized tif {}".format(np.shape(tif_resized),np.max(tif_resized.astype('int16'))))
+    tif.imsave(os.path.join(output_dir,"resized.tif"),tif_resized.astype('int16'))
 
     transformfiles=[]
 
