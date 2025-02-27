@@ -55,8 +55,11 @@ if __name__ == "__main__":
 			ann_vol = itk.imread(ann_file,pixel_type=itk.US)
 			print('using ann file: {}'.format(ann_file))
 			ann_base = os.path.basename(ann_vol).split('.')[0]
+	else:
+		ann_vol=0
 	mv = itk.imread(mv_file,pixel_type=itk.US)
 	fx = itk.imread(fx_file,pixel_type=itk.US)
+	print('using mv_base {} and fx_base {}'.format(mv_base,fx_base))
 
 	# make parameter object from files, this is somehow much faster than making programmatically 
 	parameter_object = itk.ParameterObject.New()

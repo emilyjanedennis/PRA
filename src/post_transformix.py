@@ -46,8 +46,8 @@ if __name__ == "__main__":
 	cells = np.zeros(np.shape(tif.imread(ann_vol_path)))
 	for idx in df.index:
 		x,y,z=[df.x[idx],df.y[idx],df.z[idx]]
-		if (x<mvshape[0]) and (y<mvshape[1]) and (z<mvshape[2]):
-			cells[x,y,z]+=1
+		if (x<mvshape[2]) and (y<mvshape[1]) and (z<mvshape[0]):
+			cells[z,y,x]+=1
 	mask=tif.imread(mask_vol_path)
 	cells=cells*mask
 	np.save(os.path.join(fld,'cells_vol.npy'),cells)
