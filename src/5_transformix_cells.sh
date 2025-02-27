@@ -14,3 +14,4 @@ echo "moving image: $ARG3"
 echo "output directory (optional): $ARG4"
 
 python transformix_points.py "$ARG1" "$ARG2" "$ARG3" "$ARG4"
+

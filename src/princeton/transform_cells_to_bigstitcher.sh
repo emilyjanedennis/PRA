@@ -1,13 +1,10 @@
 #!/bin/bash
-#BSUB -n 4
-#BSUB -W 10:00
-#BSUB -o log_%J.txt
 
 source activate base
 conda activate cm2
 
 echo 'activated cm2'
-echo 'using variables:'
+echo 'input should be a full path to a processed/bigstitcher folder'
 echo $1
 python filtcells_to_locs.py $1
 

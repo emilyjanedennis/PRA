@@ -30,19 +30,29 @@ if __name__ == "__main__":
 	# parse inputs
 	if len(sys.argv)>3:
 		transform_folder = sys.argv[1]
-		points_csv = sys.argv[2]
+		points_txt = sys.argv[2]
 		mv_file = sys.argv[3]
 	else:
 		print('ERROR!!! you did not enter three inputs! you only entered {}'.format(sys.argv))
+		sys.exit(1)
 	if not os.path.isdir(transform_folder):
 		print('first input must be a string pointing to a folder, check your entry: {}'.format(transform_folder))
+		sys.exit(1)
 	transform_files = [os.path.join(transform_folder,file) for file in os.listdir(transform_folder) if "TransformParameters" in file]
 	if len(transform_files)==0:
 		print('ERROR, there are no TransformParameters files in the folder supplied! \n check the folder: {}'.format(transform_folder))
+		sys.exit(1)
 	try:
 		mv=itk.imread(mv_file)
 	except:
 		print('ERROR! {} is not an image file or cannot be opened'.format(mv_file))
+		sys.exit(1)
+	try:
+		pd.read_csv(points_txt)
+	except:
+		print('ERROR! {} is not a points.txt file, check contents or path'.format(points_txt))
+		sys.exit(1)
+
 	if len(sys.argv) > 4 and len(sys.argv[4])>0:
 		if os.path.isdir(sys.argv[4]):
 			output_directory = sys.argv[4]
@@ -66,14 +76,12 @@ if __name__ == "__main__":
 	# remember, this is taking points from the FIXED volume and places them in the MOVING volume
 	# for example, to get points in the allen atlas, you should be using a transform folder produced
 	# by aligning the allen (mv) TO your brain with cells (fx)
-	transformixed_coords=itk.transformix_pointset(mv, transform_to_apply,fixed_point_set_file_name=points_csv,output_directory=output_directory)
+	transformixed_coords=itk.transformix_pointset(mv, transform_to_apply,fixed_point_set_file_name=points_txt,output_directory=output_directory)
 	dfx=pd.DataFrame(transformixed_coords)
 	dfx.columns = dfx.columns.astype(str)
-	print('dfx cols are : {}'.format(dfx.columns))
-	dfx.to_csv(os.path.join(output_directory,'points_out_test.csv'))
 	dfx = dfx[['46','47','48']]
 	dfx.columns = ['x','y','z']
 	dfx.x=dfx.x.astype(int)
 	dfx.y=dfx.y.astype(int)
 	dfx.z=dfx.z.astype(int)
-	dfx.to_csv(os.path.join(output_directory,'points_transformixed.csv'))
+	dfx.to_csv(os.path.join(output_directory,'{}_points_transformixed.csv'.format(os.path.basename(points_txt)[:-4])))

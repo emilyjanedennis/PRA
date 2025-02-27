@@ -1,0 +1,106 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+activated cm2
+input should be a full path to a processed/bigstitcher folder:
+/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher
+working on /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher/tiffs/cells_filtered.npy
+full path does not lead to a file, check filepath: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher/tiffs/cells_filtered.npy
+Traceback (most recent call last):
+  File "filtcells_to_locs.py", line 33, in <module>
+    print('max dims are: {}x {}y {}z'.format(np.max(cells['x']),np.max(cells['y']),np.max(cells['z'])))
+NameError: name 'cells' is not defined
+ERROR! could not load /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher/outputs/filtered_cells.csv, check your path!
+Traceback (most recent call last):
+  File "pre_transformix.py", line 39, in <module>
+    df.columns=['x','y','z']
+NameError: name 'df' is not defined
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u28>
+Subject: Job 143259712: <prep-for-transformix_2024-01-08_100346> in cluster <Janelia> Done
+
+Job <prep-for-transformix_2024-01-08_100346> was submitted from host <e10u28> by user <dennise> in cluster <Janelia> at Wed Feb 26 17:41:10 2025
+Job was executed on host(s) <e10u28>, in queue <local>, as user <dennise> in cluster <Janelia> at Wed Feb 26 17:41:10 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Wed Feb 26 17:41:10 2025
+Terminated at Wed Feb 26 17:41:16 2025
+Results reported at Wed Feb 26 17:41:16 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./4_prep_for_transformix.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   1.87 sec.
+    Max Memory :                                 26 MB
+    Average Memory :                             17.67 MB
+    Total Requested Memory :                     15360.00 MB
+    Delta Memory :                               15334.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   4 sec.
+    Turnaround time :                            6 sec.
+
+The output (if any) is above this job summary.
+
+
+CondaError: Run 'conda init' before 'conda activate'
+
+activated cm2
+input should be a full path to a processed/bigstitcher folder:
+/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher
+working on /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher/tiffs/cells_filtered.npy
+max dims are: 6726x 9352y 2256z
+full x: 6856 
+ full y: 9560 
+ full z: 2271
+ds x: 572 
+ ds y: 798 
+ ds z: 388
+=================================
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u27>
+Subject: Job 143260880: <prep-for-transformix_2024-01-08_100346> in cluster <Janelia> Done
+
+Job <prep-for-transformix_2024-01-08_100346> was submitted from host <e10u27> by user <dennise> in cluster <Janelia> at Wed Feb 26 18:57:23 2025
+Job was executed on host(s) <e10u27>, in queue <local>, as user <dennise> in cluster <Janelia> at Wed Feb 26 18:57:23 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Wed Feb 26 18:57:23 2025
+Terminated at Wed Feb 26 18:57:36 2025
+Results reported at Wed Feb 26 18:57:36 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./4_prep_for_transformix.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_100346/processed/bigstitcher
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   9.11 sec.
+    Max Memory :                                 79 MB
+    Average Memory :                             53.00 MB
+    Total Requested Memory :                     15360.00 MB
+    Delta Memory :                               15281.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                13
+    Run time :                                   11 sec.
+    Turnaround time :                            13 sec.
+
+The output (if any) is above this job summary.
+

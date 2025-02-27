@@ -1,0 +1,46 @@
+./5_transformix_cells.sh: line 3: activate: No such file or directory
+
+CondaError: Run 'conda init' before 'conda activate'
+
+folder from elastix output containing TransformParameters files: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-19_133809/processed/bigstitcher/output_axial_allenCCF_25_2024-11-19_133809_fused_12
+txt file containing points in fixed volume space: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-19_133809/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt
+moving image: /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+output directory (optional): 
+using output_directory: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-19_133809/processed/bigstitcher/transformix_out
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u08>
+Subject: Job 143261030: <transformix_2024-11-19_133809> in cluster <Janelia> Done
+
+Job <transformix_2024-11-19_133809> was submitted from host <e10u27> by user <dennise> in cluster <Janelia> at Wed Feb 26 19:06:29 2025
+Job was executed on host(s) <40*e10u08>, in queue <local>, as user <dennise> in cluster <Janelia> at Wed Feb 26 19:06:29 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Wed Feb 26 19:06:29 2025
+Terminated at Wed Feb 26 19:08:01 2025
+Results reported at Wed Feb 26 19:08:01 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./5_transformix_cells.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-19_133809/processed/bigstitcher/output_axial_allenCCF_25_2024-11-19_133809_fused_12 /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-19_133809/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   1287.50 sec.
+    Max Memory :                                 2972 MB
+    Average Memory :                             1108.83 MB
+    Total Requested Memory :                     614400.00 MB
+    Delta Memory :                               611428.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                171
+    Run time :                                   89 sec.
+    Turnaround time :                            92 sec.
+
+The output (if any) is above this job summary.
+

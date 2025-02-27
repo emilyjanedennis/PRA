@@ -1,0 +1,110 @@
+./6_post_transformix.sh: line 3: activate: No such file or directory
+
+CondaError: Run 'conda init' before 'conda activate'
+
+folder from transformix output, containing points_transformixed.csv files: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/transformix_out
+full path to annotation volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif
+full path to an annotation labels file: /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv
+full path to an annotation mask: /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+Traceback (most recent call last):
+  File "post_transformix.py", line 40, in <module>
+    df = pd.concat(dfs,ignore_index=True)
+  File "/groups/dennis/home/dennise/miniforge3/envs/cm2/lib/python3.7/site-packages/pandas/util/_decorators.py", line 311, in wrapper
+    return func(*args, **kwargs)
+  File "/groups/dennis/home/dennise/miniforge3/envs/cm2/lib/python3.7/site-packages/pandas/core/reshape/concat.py", line 304, in concat
+    sort=sort,
+  File "/groups/dennis/home/dennise/miniforge3/envs/cm2/lib/python3.7/site-packages/pandas/core/reshape/concat.py", line 351, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u24>
+Subject: Job 143259753: <post_transformix_2024-01-08_124238> in cluster <Janelia> Exited
+
+Job <post_transformix_2024-01-08_124238> was submitted from host <e10u27> by user <dennise> in cluster <Janelia> at Wed Feb 26 18:14:42 2025
+Job was executed on host(s) <40*e10u24>, in queue <local>, as user <dennise> in cluster <Janelia> at Wed Feb 26 18:14:42 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Wed Feb 26 18:14:42 2025
+Terminated at Wed Feb 26 18:14:45 2025
+Results reported at Wed Feb 26 18:14:45 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./6_post_transformix.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/transformix_out /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   7.64 sec.
+    Max Memory :                                 22 MB
+    Average Memory :                             15.00 MB
+    Total Requested Memory :                     614400.00 MB
+    Delta Memory :                               614378.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   1 sec.
+    Turnaround time :                            3 sec.
+
+The output (if any) is above this job summary.
+
+./6_post_transformix.sh: line 3: activate: No such file or directory
+
+CondaError: Run 'conda init' before 'conda activate'
+
+folder from transformix output, containing points_transformixed.csv files: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/transformix_out
+full path to annotation volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif
+full path to an annotation labels file: /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv
+full path to an annotation mask: /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+Traceback (most recent call last):
+  File "post_transformix.py", line 40, in <module>
+    df = pd.concat(dfs,ignore_index=True)
+  File "/groups/dennis/home/dennise/miniforge3/envs/cm2/lib/python3.7/site-packages/pandas/util/_decorators.py", line 311, in wrapper
+    return func(*args, **kwargs)
+  File "/groups/dennis/home/dennise/miniforge3/envs/cm2/lib/python3.7/site-packages/pandas/core/reshape/concat.py", line 304, in concat
+    sort=sort,
+  File "/groups/dennis/home/dennise/miniforge3/envs/cm2/lib/python3.7/site-packages/pandas/core/reshape/concat.py", line 351, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u08>
+Subject: Job 143260877: <post_transformix_2024-01-08_124238> in cluster <Janelia> Exited
+
+Job <post_transformix_2024-01-08_124238> was submitted from host <e10u27> by user <dennise> in cluster <Janelia> at Wed Feb 26 18:55:06 2025
+Job was executed on host(s) <40*e10u08>, in queue <local>, as user <dennise> in cluster <Janelia> at Wed Feb 26 18:55:06 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Wed Feb 26 18:55:06 2025
+Terminated at Wed Feb 26 18:55:10 2025
+Results reported at Wed Feb 26 18:55:10 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./6_post_transformix.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/transformix_out /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   8.78 sec.
+    Max Memory :                                 22 MB
+    Average Memory :                             15.00 MB
+    Total Requested Memory :                     614400.00 MB
+    Delta Memory :                               614378.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   2 sec.
+    Turnaround time :                            4 sec.
+
+The output (if any) is above this job summary.
+

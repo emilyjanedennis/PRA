@@ -1,0 +1,15 @@
+annotation volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif
+annotation labels: /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv
+annotation mask volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+mv: /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+fx: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/2024-01-08_124238_fused_12.tif
+processed/bigstitcher folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher
+computed inputs:
+elastix folder output: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/output_axial_allenCCF_25_2024-01-08_124238_fused_12
+currently non existant file for transformix: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt
+transformix_out folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-01-08_124238/processed/bigstitcher/transformix_out
+
+CondaError: Run 'conda init' before 'conda activate'
+
+This job will be billed to dennis
+Job <143262183> is submitted to default queue <local>.
