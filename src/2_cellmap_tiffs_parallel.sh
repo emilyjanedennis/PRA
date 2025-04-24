@@ -1,14 +1,11 @@
 #!/bin/bash
 
-conda init
-conda activate cm2
-echo 'activated cm2'
 cd /groups/dennis/dennislab/dennise/github/ClearMap2/ClearMap/Scripts
 echo 'in wd'
 echo $1
 echo $2
 
-for i in {0..23}; do bsub -n 4 -J "maketiffs_${2}_${i}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/job_${i}.txt" python CellMap_parallel_tiffs.py $1 "fused.zarr" "${i}"; done
+for i in {0..23}; do bsub -n 4 -J "maketiffs_${2}_${i}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/job_${i}.txt" ~/miniforge3/envs/cm2/bin/python CellMap_parallel_tiffs.py $1 "fused.zarr" "${i}"; done
 
 cd /groups/dennis/dennislab/dennise/github/cleared_brains/src
 echo 'complete?'

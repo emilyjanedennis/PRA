@@ -1,0 +1,48 @@
+input below, it should be a full path to a processed/bigstitcher folder:
+/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-01_115007/processed/bigstitcher
+working on /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-01_115007/processed/bigstitcher/tiffs/cells_filtered.npy
+max dims are: 5428x 7817y 1908z
+full x: 5639 
+ full y: 7861 
+ full z: 1916
+ds x: 471 
+ ds y: 656 
+ ds z: 329
+=================================
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u23>
+Subject: Job 144490642: <prep-for-transformix_2024-11-01_115007> in cluster <Janelia> Done
+
+Job <prep-for-transformix_2024-11-01_115007> was submitted from host <e10u20> by user <dennise> in cluster <Janelia> at Thu Apr 24 12:01:29 2025
+Job was executed on host(s) <e10u23>, in queue <local>, as user <dennise> in cluster <Janelia> at Thu Apr 24 12:01:29 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Thu Apr 24 12:01:29 2025
+Terminated at Thu Apr 24 12:01:38 2025
+Results reported at Thu Apr 24 12:01:38 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./4_prep_for_transformix.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-01_115007/processed/bigstitcher
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   6.41 sec.
+    Max Memory :                                 450 MB
+    Average Memory :                             88.80 MB
+    Total Requested Memory :                     15360.00 MB
+    Delta Memory :                               14910.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                13
+    Run time :                                   7 sec.
+    Turnaround time :                            9 sec.
+
+The output (if any) is above this job summary.
+

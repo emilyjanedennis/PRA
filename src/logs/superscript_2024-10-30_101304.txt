@@ -1,0 +1,16 @@
+annotation volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif
+annotation labels: /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv
+annotation mask volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+mv: /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+fx: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-10-30_101304/processed/bigstitcher/2024-10-30_101304_fused_12.tif
+processed/bigstitcher folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-10-30_101304/processed/bigstitcher
+computed inputs:
+elastix folder output: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-10-30_101304/processed/bigstitcher/output_axial_allenCCF_25_2024-10-30_101304_fused-12
+currently non existant file for transformix: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-10-30_101304/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt
+transformix_out folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-10-30_101304/processed/bigstitcher/transformix_out
+This job will be billed to dennis
+Job <144490631> is submitted to default queue <local>.
+ended(prep-for-transformix_2024-10-30_101304): Wait condition satisfied
+finished prepping, not running transformix
+This job will be billed to dennis
+Job <144490647> is submitted to default queue <local>.
