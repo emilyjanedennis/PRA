@@ -8,7 +8,7 @@ ARGOPT=${6:-''}
 ARG6="/groups/dennis/dennislab/Imaging/raw_imaging_data/${6:-''}/processed/bigstitcher"
 ARG7="${ARG6}/output_axial_allenCCF_25_${6:-''}_fused-12"
 ARG8="${ARG6}/outputs/filtered_cells_for-transformix.txt"
-ARG9="${ARG6}/transformix_out"
+ARG9="${ARG6}/outputs"
 
 echo "annotation volume: $ARG1"
 echo "annotation labels: $ARG2"
@@ -23,7 +23,7 @@ echo "currently non existant file for transformix: $ARG8"
 echo "transformix_out folder: $ARG9"
 
 
-#bsub -J "elastix_${ARGOPT}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/elastix.txt" -n 2 ./0_elastix_run.sh ${ARG4} ${ARG5}
+bsub -J "elastix_${ARGOPT}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/elastix.txt" -n 2 ./0_elastix_run.sh ${ARG4} ${ARG5}
 #bsub -J "fuse_${ARGOPT}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/fused.txt" -n 40 ./1_fuse_volume.sh ${ARG6}
 #bwait -w "ended(fuse_${ARGOPT})"
 
@@ -42,12 +42,13 @@ echo "transformix_out folder: $ARG9"
 #bsub -J "detectsingle_${ARGOPT}" -n 50  -o "logs/detectsingle_${ARGOPT}.txt" ./3_3_cellmap_detectsingle.sh $ARG6
 #bwait -w "ended(detectsingle_${ARGOPT})"
 #echo "finished detect, prepping for transformix: "
-bsub -J "prep-for-transformix_${ARGOPT}" -n 1 -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/prepfortransformix_${ARGOPT}.txt" ./4_prep_for_transformix.sh $ARG6
-bwait -w "ended(prep-for-transformix_${ARGOPT})"
-echo "finished prepping, not running transformix"
-bsub -J "transformix_${ARGOPT}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/transformix_${ARGOPT}.txt" -n 2 ./5_transformix_cells.sh $ARG7 $ARG8 $ARG4
-bwait -w "ended(transformix_${ARGOPT})"
-echo "finished transformix, formatting final ouputs"
-bsub -J "post_transformix_${ARGOPT}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/posttransformix_${ARGOPT}.txt" -n 40 ./6_post_transformix.sh $ARG9 $ARG1 $ARG2 $ARG3
-bwait -w "ended(post_transformix_${ARGOPT})"
-echo "complete! probably"
+#bsub -J "prep-for-transformix_${ARGOPT}" -n 1 -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/prepfortransformix_${ARGOPT}.txt" ./4_prep_for_transformix.sh $ARG6
+#bwait -w "ended(prep-for-transformix_${ARGOPT})"
+#echo "finished prepping, not running transformix"
+#bsub -J "transformix_${ARGOPT}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/transformix_${ARGOPT}.txt" -n 2 ./5_transformix_cells.sh $ARG7 $ARG8 $ARG4
+#bwait -w "ended(transformix_${ARGOPT})"
+#echo "finished transformix, formatting final ouputs"
+#bsub -J "post_transformix_${ARGOPT}" -o "/groups/dennis/dennislab/dennise/github/cleared_brains/src/logs/posttransformix_${ARGOPT}.txt" -n 40 ./6_post_transformix.sh $ARG9 $ARG1 $ARG2 $ARG3
+#bwait -w "ended(post_transformix_${ARGOPT})"
+#echo "complete! probably"
+

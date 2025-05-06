@@ -1,4 +1,0 @@
-folder from elastix output containing TransformParameters files: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-08-28_160030/processed/bigstitcher/output_axial_allenCCF_25_2024-08-28_160030_fused-12
-txt file containing points in fixed volume space: /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-08-28_160030/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt
-moving image: /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
-output directory (optional): 

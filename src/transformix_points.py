@@ -36,8 +36,12 @@ if __name__ == "__main__":
 		print('ERROR!!! you did not enter three inputs! you only entered {}'.format(sys.argv))
 		sys.exit(1)
 	if not os.path.isdir(transform_folder):
-		print('first input must be a string pointing to a folder, check your entry: {}'.format(transform_folder))
-		sys.exit(1)
+		new_transform_folder = transform_folder.split('fused')[0]+'fused_12'
+		if os.path.isdir(new_transform_folder):
+			transform_folder = new_transform_folder
+		else:
+			print('first input must be a string pointing to a folder, check your entry: {}'.format(transform_folder))
+			sys.exit(1)
 	transform_files = [os.path.join(transform_folder,file) for file in os.listdir(transform_folder) if "TransformParameters" in file]
 	if len(transform_files)==0:
 		print('ERROR, there are no TransformParameters files in the folder supplied! \n check the folder: {}'.format(transform_folder))
@@ -58,11 +62,11 @@ if __name__ == "__main__":
 			output_directory = sys.argv[4]
 		else:
 			print('error, output_directory provided was not a directory. check path: {}'.format(output_directory))
-			output_directory = os.path.join(os.path.dirname(transform_folder),'transformix_out')
+			output_directory = os.path.join(os.path.dirname(transform_folder),'outputs')
 			if not os.path.isdir(output_directory):
 				os.mkdir(output_directory)
 	else:
-		output_directory = os.path.join(os.path.dirname(transform_folder),'transformix_out')
+		output_directory = os.path.join(os.path.dirname(transform_folder),'outputs')
 		if not os.path.isdir(output_directory):
 			os.mkdir(output_directory)
 	print('using output_directory: {}'.format(output_directory))
