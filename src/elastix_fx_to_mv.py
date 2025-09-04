@@ -32,31 +32,31 @@ if __name__ == "__main__":
 		if not os.path.isfile(mv_file):
 			print('the first argument should be a full path to a .tif file, mv {} is not a file'.format(mv_file))
 		elif not os.path.isfile(fx_file):
-			if len(fx_file.split('fused_12'))>1:
-				f12=fx_file.split('fused_12')[0]+'fused-12.tif'
-				justf=fx_file.split('fused_12')[0]+'.tif'
+			if len(fx_file.split('_fused_12'))>1:
+				f12=fx_file.split('_fused_12')[0]+'_fused-12.tif'
+				justf=fx_file.split('_fused_12')[0]+'.tif'
 				if os.path.isfile(f12):
 					fx_file=f12
 				elif os.path.isfile(justf):
 					fx_file=justf
 				else:
 					print('both arguments should be a full path to a file, fx {} is not a file'.format(fx_file))
-			elif len(fx_file.split('fused-12))>1:
-                                f_12=fx_file.split('fused-12')[0]+'fused_12.tif'
-                                justf=fx_file.split('fused-12')[0]+'.tif'
+			elif len(fx_file.split('_fused-12'))>1:
+                                f_12=fx_file.split('_fused-12')[0]+'_fused_12.tif'
+                                justf=fx_file.split('_fused-12')[0]+'.tif'
                                 if os.path.isfile(f_12):
                                         fx_file=f_12
                                 elif os.path.isfile(justf):
                                         fx_file=justf
-				else:
-					print('both arguments should be a full path to a file, fx {} is not a file'.format(fx_file))
+                                else:
+                                        print('both arguments should be a full path to a file, fx {} is not a file'.format(fx_file))
 	mv_base=os.path.basename(mv_file).split('.')[0]
 	fx_base=os.path.basename(fx_file).split('.')[0]
 
 	if len(sys.argv[3]) > 1:
 		output_dir = sys.argv[3]
 	else:
-		output_dir = os.path.join(os.path.dirname(fx_file),'output_{}_{}'.format(mv_base,fx_base))
+		output_dir = os.path.join(os.path.dirname(fx_file),'output_{}_{}'.format(mv_base,fx_base.split('_fused')[0]))
 		if not os.path.isdir(output_dir):
 			os.mkdir(output_dir)
 		print('using {} as ouput directory'.format(os.path.dirname(fx_file)))

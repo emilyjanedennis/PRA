@@ -29,13 +29,16 @@ if __name__ == "__main__":
 			print('cannot open file, check filepath: {}'.format(filepath))
 		else:
 			print('full path does not lead to a file, check filepath: {}'.format(filepath))
+			sys.exit(1)
 
 	print('max dims are: {}x {}y {}z'.format(np.max(cells['x']),np.max(cells['y']),np.max(cells['z'])))
 	df_cells = pd.DataFrame(cells[['x','y','z']])
-
+	print('done making dataframe of length {}'.format(len(df_cells)))
 	directory=os.path.dirname(os.path.dirname(filepath))
 	outputdir = os.path.join(directory,'outputs')
 	if not os.path.isdir(outputdir):
-		outputdir = os.mkdir(outputdir)
-
-	df_cells.to_csv(os.path.join(outputdir,"filtered_cells.csv"),header=False,index=False)
+		os.mkdir(outputdir)
+		print('made output dir')
+	output_file = os.path.join(outputdir,'filtered_cells.csv')
+	print('trying to save as output file {}'.format(output_file))
+	df_cells.to_csv(output_file,header=False,index=False)

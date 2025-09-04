@@ -1,0 +1,106 @@
+annotation volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif
+annotation labels: /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv
+annotation mask volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+mv: /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+fx: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/2025-08-13_105722_fused_12.tif
+processed/bigstitcher folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher
+computed inputs:
+elastix folder output: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/output_axial_allenCCF_25_2025-08-13_105722
+currently non existant file for transformix: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt
+transformix_out folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/outputs
+This job will be billed to dennis
+Job <146330556> is submitted to default queue <local>.
+ended(prep-for-transformix_2025-08-13_105722): Wait condition satisfied
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u11>
+Subject: Job 146330555: <super2025-08-13_105722> in cluster <Janelia> Done
+
+Job <super2025-08-13_105722> was submitted from host <e10u11> by user <dennise> in cluster <Janelia> at Wed Sep  3 16:08:36 2025
+Job was executed on host(s) <e10u11>, in queue <local>, as user <dennise> in cluster <Janelia> at Wed Sep  3 16:08:36 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Wed Sep  3 16:08:36 2025
+Terminated at Wed Sep  3 16:09:40 2025
+Results reported at Wed Sep  3 16:09:40 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./superscript_all.sh /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/2025-08-13_105722_fused_12.tif 2025-08-13_105722
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.22 sec.
+    Max Memory :                                 16 MB
+    Average Memory :                             7.41 MB
+    Total Requested Memory :                     15360.00 MB
+    Delta Memory :                               15344.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   62 sec.
+    Turnaround time :                            64 sec.
+
+The output (if any) is above this job summary.
+
+annotation volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif
+annotation labels: /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv
+annotation mask volume: /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif
+mv: /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+fx: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/2025-08-13_105722_fused_12.tif
+processed/bigstitcher folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher
+computed inputs:
+elastix folder output: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/output_axial_allenCCF_25_2025-08-13_105722
+currently non existant file for transformix: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt
+transformix_out folder: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/outputs
+finished prepping, not running transformix
+This job will be billed to dennis
+Job <146337717> is submitted to default queue <local>.
+ended(transformix_2025-08-13_105722): Wait condition satisfied
+finished transformix, formatting final ouputs
+This job will be billed to dennis
+Job <146337732> is submitted to default queue <local>.
+ended(post_transformix_2025-08-13_105722): Wait condition satisfied
+./superscript_all.sh: line 57: o: command not found
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@h06u10>
+Subject: Job 146337716: <super2025-08-13_105722> in cluster <Janelia> Exited
+
+Job <super2025-08-13_105722> was submitted from host <e02u30> by user <dennise> in cluster <Janelia> at Thu Sep  4 10:37:36 2025
+Job was executed on host(s) <h06u10>, in queue <local>, as user <dennise> in cluster <Janelia> at Thu Sep  4 10:37:36 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Thu Sep  4 10:37:36 2025
+Terminated at Thu Sep  4 10:53:34 2025
+Results reported at Thu Sep  4 10:53:34 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./superscript_all.sh /groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif /groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv /groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-13_105722/processed/bigstitcher/2025-08-13_105722_fused_12.tif 2025-08-13_105722
+------------------------------------------------------------
+
+Exited with exit code 127.
+
+Resource usage summary:
+
+    CPU time :                                   0.85 sec.
+    Max Memory :                                 16 MB
+    Average Memory :                             11.46 MB
+    Total Requested Memory :                     15360.00 MB
+    Delta Memory :                               15344.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   956 sec.
+    Turnaround time :                            958 sec.
+
+The output (if any) is above this job summary.
+

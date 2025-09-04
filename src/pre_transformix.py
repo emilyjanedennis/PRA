@@ -20,8 +20,8 @@ if __name__ == "__main__":
 		print('this requires one input: a string that is a full path to a bigstitcher folder containing an output folder')
 		sys.exit(1)
 	elif not os.path.isdir(os.path.join(sys.argv[1],'outputs')):
-		print('no outputs folder found, check path {}'.format(sys.argv[1]))
-		sys.exit(1)
+		os.mkdir(os.path.join(sys.argv[1],'outputs'))
+		print('no outputs folder found, making one')
 	else:
 		fld=sys.argv[1]
 
@@ -31,11 +31,12 @@ if __name__ == "__main__":
 		stitched = np.load(os.path.join(fld,'tiffs','stitched.npy'), mmap_mode='r')
 	except:
 		print('ERROR! could not load stitched.npy file, check your path {}'.format(os.path.join(fld,'tiffs','stitched.npy')))
+		sys.exit(1)
 	try:
 		df = pd.read_csv(os.path.join(outfld,file),header=None)
 	except:
 		print('ERROR! could not load {}, check your path!'.format(os.path.join(outfld,file)))
-	
+		sys.exit(1)
 	df.columns=['x','y','z']
 	stackshape=np.shape(stitched)
 	xfull = stackshape[0]
@@ -44,7 +45,7 @@ if __name__ == "__main__":
 
 	# put into downsampled space, have dims from file above
 	for filename in os.listdir(fld):
-		if "fused" in filename and ".tif" in filename:
+		if ".tif" in filename:
 			[dsz,dsy,dsx]=np.shape(tif.imread(os.path.join(fld,filename)))
 	df['x_ds']=(df.x*(dsx/xfull)).astype(int)
 	df['y_ds']=(df.y*(dsy/yfull)).astype(int)
