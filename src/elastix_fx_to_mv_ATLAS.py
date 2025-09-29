@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 INPUTS: 
 1. full path (str) to a tif file (moving volume)
@@ -57,9 +55,9 @@ if __name__ == "__main__":
 		output_dir = sys.argv[3]
 	else:
 		output_dir = os.path.join(os.path.dirname(fx_file),'output_{}_{}'.format(mv_base,fx_base.split('_fused')[0]))
-		if not os.path.isdir(output_dir):
-			os.mkdir(output_dir)
-		print('using {} as ouput directory'.format(os.path.dirname(fx_file)))
+	if not os.path.isdir(output_dir):
+		os.mkdir(output_dir)
+	print('using {} as ouput directory'.format(os.path.dirname(fx_file)))
 	if len(sys.argv[4]) > 1:
 		ann_file = sys.argv[4]
 		if not os.path.isfile(ann_file):
@@ -87,7 +85,6 @@ if __name__ == "__main__":
 
 	# align mv to fx
 	result_img_elx, result_transform_params = itk.elastix_registration_method(fx,mv,parameter_object, log_to_file=True,output_directory = output_dir)
-	        mv = itk.imread(mv_file,pixel_type=itk.US)
 	# save aligned image
 	tif.imsave(os.path.join(output_dir,"{}_to_{}.tif".format(mv_base,fx_base)),np.asarray(result_img_elx).astype(np.float32))
 
