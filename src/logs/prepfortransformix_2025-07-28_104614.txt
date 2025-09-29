@@ -1,0 +1,51 @@
+input below, it should be a full path to a processed/bigstitcher folder:
+/groups/dennis/dennislab/Imaging/raw_imaging_data/2025-07-28_104614/processed/bigstitcher
+working on /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-07-28_104614/processed/bigstitcher/tiffs/cells_filtered.npy
+max dims are: 5311x 7870y 2295z
+done making dataframe of length 677364
+made output dir
+trying to save as output file /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-07-28_104614/processed/bigstitcher/outputs/filtered_cells.csv
+full x: 5792 
+ full y: 7877 
+ full z: 2298
+ds x: 484 
+ ds y: 658 
+ ds z: 394
+=================================
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u16>
+Subject: Job 146595174: <prep-for-transformix_2025-07-28_104614> in cluster <Janelia> Done
+
+Job <prep-for-transformix_2025-07-28_104614> was submitted from host <e10u20> by user <dennise> in cluster <Janelia> at Tue Sep 16 12:30:41 2025
+Job was executed on host(s) <e10u16>, in queue <local>, as user <dennise> in cluster <Janelia> at Tue Sep 16 12:30:41 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Tue Sep 16 12:30:41 2025
+Terminated at Tue Sep 16 12:35:58 2025
+Results reported at Tue Sep 16 12:35:58 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./4_prep_for_transformix.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-07-28_104614/processed/bigstitcher
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   14.61 sec.
+    Max Memory :                                 437 MB
+    Average Memory :                             19.23 MB
+    Total Requested Memory :                     15360.00 MB
+    Delta Memory :                               14923.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                13
+    Run time :                                   315 sec.
+    Turnaround time :                            317 sec.
+
+The output (if any) is above this job summary.
+

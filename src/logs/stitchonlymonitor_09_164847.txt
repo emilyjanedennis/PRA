@@ -1,3 +1,0 @@
-/groups/dennis/dennislab/dennise/github/ClearMap2/ClearMap/Scripts
-using variables:
-/groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-09_164847/processed/bigstitcher

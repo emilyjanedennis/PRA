@@ -1,0 +1,42 @@
+folder from elastix output containing TransformParameters files: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-08_201825/processed/bigstitcher/output_axial_allenCCF_25_2025-08-08_201825
+txt file containing points in fixed volume space: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-08_201825/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt
+moving image: /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+output directory (optional): 
+using output_directory: /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-08_201825/processed/bigstitcher/outputs
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u16>
+Subject: Job 146509606: <transformix_2025-08-08_201825> in cluster <Janelia> Done
+
+Job <transformix_2025-08-08_201825> was submitted from host <e10u09> by user <dennise> in cluster <Janelia> at Mon Sep 15 14:07:12 2025
+Job was executed on host(s) <2*e10u16>, in queue <local>, as user <dennise> in cluster <Janelia> at Mon Sep 15 14:07:12 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Mon Sep 15 14:07:12 2025
+Terminated at Mon Sep 15 14:13:15 2025
+Results reported at Mon Sep 15 14:13:15 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./5_transformix_cells.sh /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-08_201825/processed/bigstitcher/output_axial_allenCCF_25_2025-08-08_201825 /groups/dennis/dennislab/Imaging/raw_imaging_data/2025-08-08_201825/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt /groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   1211.20 sec.
+    Max Memory :                                 3574 MB
+    Average Memory :                             1666.28 MB
+    Total Requested Memory :                     30720.00 MB
+    Delta Memory :                               27146.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                19
+    Run time :                                   361 sec.
+    Turnaround time :                            363 sec.
+
+The output (if any) is above this job summary.
+

@@ -22,8 +22,7 @@ if __name__ == "__main__":
 	elif not os.path.isdir(os.path.join(sys.argv[1],'outputs')):
 		os.mkdir(os.path.join(sys.argv[1],'outputs'))
 		print('no outputs folder found, making one')
-	else:
-		fld=sys.argv[1]
+	fld=sys.argv[1]
 
 	outfld=os.path.join(fld,'outputs')
 	file = "filtered_cells.csv"
