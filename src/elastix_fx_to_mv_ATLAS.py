@@ -4,7 +4,7 @@ INPUTS:
 2. full path (str) to a tif file (fixed volume)
 
 OPTIONAL INPUTS
-3. full path (str) to an output directory, if none, will use working directory + /transformix_out
+3. full path (str) to an output file
 4. full path (str) to an annotation file, if none, will not use
 
 OUTPUTS:
@@ -51,27 +51,15 @@ if __name__ == "__main__":
 	mv_base=os.path.basename(mv_file).split('.')[0]
 	fx_base=os.path.basename(fx_file).split('.')[0]
 
-	if len(sys.argv[3]) > 1:
-		output_dir = sys.argv[3]
+	if (len(sys.argv[3]) > 1) and ('tif' in sys.argv[3]):
+		output_file = sys.argv[3]
 	else:
-		output_dir = os.path.join(os.path.dirname(fx_file),'output_{}_{}'.format(mv_base,fx_base.split('_fused')[0]))
+		output_file = os.path.join(os.path.dirname(fx_file),'output_{}_{}.tif'.format(mv_base,fx_base.split('_fused')[0]))
+	output_dir= os.path.dirname(output_file)
 	if not os.path.isdir(output_dir):
-		os.mkdir(output_dir)
-	print('using {} as ouput directory'.format(os.path.dirname(fx_file)))
-	if len(sys.argv[4]) > 1:
-		ann_file = sys.argv[4]
-		if not os.path.isfile(ann_file):
-			ann_vol=0
-			print('ann_file entered is not a real file, not using ann file {}'.format(ann_file))
-		elif ".tif" not in ann_file:
-			print('ann_file entered is not a tif, not using ann_file: {}'.format(ann_file))
-			ann_vol=0
-		else:
-			ann_vol = itk.imread(ann_file,pixel_type=itk.US)
-			print('using ann file: {}'.format(ann_file))
-			ann_base = os.path.basename(ann_vol).split('.')[0]
-	else:
-		ann_vol=0
+		os.mkdir(output_dir) # just making sure the file can be made
+	print('using {} as ouput'.format(output_file))
+	ann_vol=0
 	mv = itk.imread(mv_file,pixel_type=itk.US)
 	fx = itk.imread(fx_file,pixel_type=itk.US)
 	print('using mv_base {} and fx_base {}'.format(mv_base,fx_base))
@@ -86,10 +74,4 @@ if __name__ == "__main__":
 	# align mv to fx
 	result_img_elx, result_transform_params = itk.elastix_registration_method(fx,mv,parameter_object, log_to_file=True,output_directory = output_dir)
 	# save aligned image
-	tif.imsave(os.path.join(output_dir,"{}_to_{}.tif".format(mv_base,fx_base)),np.asarray(result_img_elx).astype(np.float32))
-
-	# apply to anns if anns present
-	if ann_vol != 0:
-		result_image_transformix = itk.transformix_filter(ann_vol, result_transform_params)
-		tif.imsave(os.path.join(output_dir,"{}_in_{}.tif".format(ann_base,fx_base)),np.asarray(result_image_transformix).astype(np.float32))
-
+	tif.imsave(output_file,np.asarray(result_img_elx).astype(np.float32))
