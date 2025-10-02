@@ -8,7 +8,7 @@ import os
 import tifffile as tif
 import numpy as np
 import sys
-
+import datetime
 
 def load_memmap_arr(pth, mode="r", dtype = "uint16", shape = False):
     """
@@ -90,7 +90,8 @@ if __name__ == "__main__":
     dtype = vol.dtype
 
     #init array
-    arr = load_memmap_arr(os.path.join(outputdir,'alltiffstogether.npy'), mode="w+", shape = (len(brainlist),z,y,x), dtype = dtype)
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    arr = load_memmap_arr(os.path.join(outputdir,'alltiffstogether_{}.npy'.format(timestamp)), mode="w+", shape = (len(brainlist),z,y,x), dtype = dtype)
 
     #load
     for i, brain in enumerate(brainlist):

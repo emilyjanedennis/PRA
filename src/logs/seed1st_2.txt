@@ -1,0 +1,48 @@
+listofbrains: ['/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-07-29_124314/processed/bigstitcher/2024-07-29_124314_fused_12.tif','/groups/dennis/dennislab/dennise/seed2_output/seed2_output.tif']
+output dir: /groups/dennis/dennislab/dennise/seed1st
+output tif (optional): seed1st_2.tif
+brainlist is ['/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-07-29_124314/processed/bigstitcher/2024-07-29_124314_fused_12.tif', '/groups/dennis/dennislab/dennise/seed2_output/seed2_output.tif']
+using brain /groups/dennis/dennislab/Imaging/raw_imaging_data/2024-07-29_124314/processed/bigstitcher/2024-07-29_124314_fused_12.tif
+using brain /groups/dennis/dennislab/dennise/seed2_output/seed2_output.tif
+using outputdir: /groups/dennis/dennislab/dennise/seed1st
+will save to this file: /groups/dennis/dennislab/dennise/seed1st/seed1st_2.tif
+Collecting data and generating memory mapped array9047.704
+65535.0
+...completed
+Taking median and saving as seed1st_2.tif...completed
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@e10u22>
+Subject: Job 146855757: <./atlas_median.sh [\'/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-07-29_124314/processed/bigstitcher/2024-07-29_124314_fused_12.tif\',\'/groups/dennis/dennislab/dennise/seed2_output/seed2_output.tif\'] /groups/dennis/dennislab/dennise/seed1st seed1st_2.tif> in cluster <Janelia> Done
+
+Job <./atlas_median.sh [\'/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-07-29_124314/processed/bigstitcher/2024-07-29_124314_fused_12.tif\',\'/groups/dennis/dennislab/dennise/seed2_output/seed2_output.tif\'] /groups/dennis/dennislab/dennise/seed1st seed1st_2.tif> was submitted from host <e02u30> by user <dennise> in cluster <Janelia> at Thu Oct  2 16:30:24 2025
+Job was executed on host(s) <2*e10u22>, in queue <local>, as user <dennise> in cluster <Janelia> at Thu Oct  2 16:30:24 2025
+</groups/dennis/home/dennise> was used as the home directory.
+</groups/dennis/dennislab/dennise/github/cleared_brains/src> was used as the working directory.
+Started at Thu Oct  2 16:30:24 2025
+Terminated at Thu Oct  2 16:30:41 2025
+Results reported at Thu Oct  2 16:30:41 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./atlas_median.sh [\'/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-07-29_124314/processed/bigstitcher/2024-07-29_124314_fused_12.tif\',\'/groups/dennis/dennislab/dennise/seed2_output/seed2_output.tif\'] /groups/dennis/dennislab/dennise/seed1st seed1st_2.tif
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   11.94 sec.
+    Max Memory :                                 2016 MB
+    Average Memory :                             786.50 MB
+    Total Requested Memory :                     30720.00 MB
+    Delta Memory :                               28704.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   14 sec.
+    Turnaround time :                            17 sec.
+
+The output (if any) is above this job summary.
+
