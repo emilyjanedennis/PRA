@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-# the above is required to have elxParameterObject "work"
 import os, sys
 import tifffile as tif
 import pandas as pd
@@ -25,8 +24,6 @@ if __name__ == "__main__":
 		mask_vol_path=sys.argv[4]
 	else:
 		print('ERROR!!! you did not enter three inputs! you only entered {}'.format(sys.argv))
-
-
 
 	# read in a folder with csvs with all the data
 	#/groups/dennis/dennislab/Imaging/raw_imaging_data/2024-11-19_124952/processed/bigstitcher/transformix_out/

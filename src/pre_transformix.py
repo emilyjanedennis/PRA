@@ -31,9 +31,9 @@ if __name__ == "__main__":
 		print('ERROR! could not load stitched.npy file, check your path {}'.format(os.path.join(fld,'tiffs','stitched.npy')))
 		sys.exit(1)
 	try:
-		df = pd.read_csv(os.path.join(outfld,file),header=None)
+		df = pd.read_csv(os.path.join(fld,file),header=None)
 	except:
-		print('ERROR! could not load {}, check your path!'.format(os.path.join(outfld,file)))
+		print('ERROR! could not load {}, check your path!'.format(os.path.join(fld,file)))
 		sys.exit(1)
 	df.columns=['x','y','z']
 	stackshape=np.shape(stitched)
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 	df['z_ds']=(df.z*(dsz/zfull)).astype(int)
 	print('full x: {} \n full y: {} \n full z: {}'.format(xfull,yfull,zfull))
 	print('ds x: {} \n ds y: {} \n ds z: {}'.format(dsx,dsy,dsz))
-	df.to_csv(os.path.join(outfld,file[:-4]+'.csv'))
+	df.to_csv(os.path.join(fld,file[:-4]+'.csv'))
 
 	# reformat for transformix
 	intermediate=df[['x_ds','y_ds','z_ds']]
@@ -59,4 +59,4 @@ if __name__ == "__main__":
 	transformix_df = pd.DataFrame([['point','',''],[str(len(df)),'','']],columns=['x','y','z'])
 	transformix_df=pd.concat([transformix_df,intermediate]).reset_index(drop=True)
 	print('=================================')
-	transformix_df.to_csv(os.path.join(outfld,file[:-4]+'_for-transformix.txt'),sep=' ',header=None,index=None)
+	transformix_df.to_csv(os.path.join(fld,file[:-4]+'_for-transformix.txt'),sep=' ',header=None,index=None)

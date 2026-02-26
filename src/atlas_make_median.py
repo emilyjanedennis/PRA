@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     # first let's process and check the inputs
     if len(sys.argv) < 3:
-        print('this script requires at minimum two inputs: ["a list of full paths to images"] and an ouutput directory')
+        print('this script requires at minimum two inputs: ["a list of full paths to images"] and an output directory')
         sys.exit(1)
     elif len(sys.argv[1])<2:
         print('ERROR this script requires at minimum two full paths to images, you provided {}'.format(sys.argv[1]))
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         output_tiff = sys.argv[3]
         if not output_tiff[-4:]=='.tif':
             print('ERROR the output tiff string provided did not end in .tif, using default')
-            output_tiff = 'result.tiff'
+            output_tiff = 'result.tif'
     else:
         output_tiff = 'result.tif'
     full_output_tiff = os.path.join(outputdir,output_tiff)

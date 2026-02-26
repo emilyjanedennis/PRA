@@ -13,6 +13,10 @@ OUTPUTS:
 1. a folder of results from transformix
 2. a csv of cell locations in moving coordinates
 
+remember, this is taking points from the FIXED volume and places them in the MOVING volume
+for example, to get points in the allen atlas, you should be using a transform folder produced
+by aligning the allen (mv) TO your brain with cells (fx)
+
 """
 
 import itkConfig

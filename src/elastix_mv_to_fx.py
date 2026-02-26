@@ -53,8 +53,10 @@ if __name__ == "__main__":
 	mv_base=os.path.basename(mv_file).split('.')[0]
 	fx_base=os.path.basename(fx_file).split('.')[0]
 
-	if len(sys.argv[3]) > 1:
-		output_dir = sys.argv[3]
+	num_transforms=int(sys.argv[3])
+
+	if len(sys.argv[4]) > 1:
+		output_dir = sys.argv[4]
 		if not os.path.isdir(output_dir):
 			os.mkdir(output_dir)
 	else:
@@ -81,11 +83,15 @@ if __name__ == "__main__":
 	print('using mv_base {} and fx_base {}'.format(mv_base,fx_base))
 
 	# make parameter object from files, this is somehow much faster than making programmatically 
+	# num_transforms allows for flexible number of bsplines
 	parameter_object = itk.ParameterObject.New()
 	parameter_object.AddParameterFile('../parameter_folder/Order1_Par0000affine.txt')
-	parameter_object.AddParameterFile('../parameter_folder/Order3_Par0000bspline.txt')
-	parameter_object.AddParameterFile('../parameter_folder/Order3_Par0000bspline.txt')
-	parameter_object.AddParameterFile('../parameter_folder/Order3_Par0000bspline.txt')
+	if num_transforms>1:
+		parameter_object.AddParameterFile('../parameter_folder/Order3_Par0000bspline.txt')
+	elif num_transforms>2:
+		parameter_object.AddParameterFile('../parameter_folder/Order3_Par0000bspline.txt')
+	else:
+		parameter_object.AddParameterFile('../parameter_folder/Order3_Par0000bspline.txt')
 
 	# align mv to fx
 	result_img_elx, result_transform_params = itk.elastix_registration_method(fx,mv,parameter_object, log_to_file=True,output_directory = output_dir)
