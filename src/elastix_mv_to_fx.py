@@ -55,8 +55,10 @@ if __name__ == "__main__":
 
 	if len(sys.argv[3]) > 1:
 		output_dir = sys.argv[3]
+		if not os.path.isdir(output_dir):
+			os.mkdir(output_dir)
 	else:
-		output_dir = os.path.join(os.path.dirname(fx_file),'output_{}_{}'.format(mv_base,fx_base.split('_fused')[0]))
+		output_dir = os.path.join(os.path.dirname(fx_file),'output_{}_{}'.format(mv_base,fx_base))
 		if not os.path.isdir(output_dir):
 			os.mkdir(output_dir)
 		print('using {} as ouput directory'.format(os.path.dirname(fx_file)))

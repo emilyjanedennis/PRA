@@ -60,6 +60,9 @@ if __name__ == "__main__":
 	if len(sys.argv) > 4 and len(sys.argv[4])>0:
 		if os.path.isdir(sys.argv[4]):
 			output_directory = sys.argv[4]
+		elif os.path.isdir(os.path.dirname(sys.argv[4])):
+			output_directory = sys.argv[4]
+			os.mkdir(sys.argv[4])
 		else:
 			print('error, output_directory provided was not a directory. check path: {}'.format(output_directory))
 			output_directory = os.path.join(os.path.dirname(transform_folder),'outputs')

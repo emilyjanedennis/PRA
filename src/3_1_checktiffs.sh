@@ -1,5 +1,7 @@
 #!/bin/bash
+source ./config_file.sh
+echo "path to environment: $ENV_PATH"
 
 sleep 5
-~/miniforge3/envs/cm2/bin/python checktiffs.py $1
+$ENV_PATH checktiffs.py $1
 wait

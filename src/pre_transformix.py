@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 INPUTS:
-1. full path (str) to a tif file (moving volume)
+1. full path (str) to a folder containing at least a tiffs/stitched.npy file and filtered_cells.csv file form step 3 (cellmap)
 
 OPTIONAL INPUTS
 
@@ -24,7 +24,6 @@ if __name__ == "__main__":
 		print('no outputs folder found, making one')
 	fld=sys.argv[1]
 
-	outfld=os.path.join(fld,'outputs')
 	file = "filtered_cells.csv"
 	try:
 		stitched = np.load(os.path.join(fld,'tiffs','stitched.npy'), mmap_mode='r')

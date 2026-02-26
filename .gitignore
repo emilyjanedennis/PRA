@@ -1,10 +1,11 @@
-# Slurm related
+# Slurm/LSF related
 *.out
 *.err
+*.log
 
-# Data folder
-data/*
-data/**
+# Ignore data and log folders
+data/
+src/logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -19,6 +20,10 @@ __pycache__/
 **/connectivity/experiment*/**
 */connectivity/exper*/*
 notebooks/misc/connectivity/**
+
+# accidental tifs
+*.tif 
+*.tiff
 
 # ClearMap2
 ClearMap2/**

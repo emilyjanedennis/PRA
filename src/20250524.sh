@@ -1,24 +1,25 @@
-names=("2025-04-22_105021" "2025-04-22_121123" "2025-04-22_125616" "2025-04-22_143339" "2025-04-22_151235" "2025-04-23_092538" "2025-04-23_101426" "2025-04-23_111931" "2025-04-23_120857" "2025-04-23_133149" "2025-04-23_141540" "2025-04-23_150815" "2025-04-23_164126" "2025-04-24_090927" "2025-04-24_095802" "2025-04-24_105152" "2025-04-24_113915" "2025-04-22_095551")
-ARG1="/groups/dennis/dennislab/dennise/github/cleared_brains/data/annotation_template_25_resliced.tif"
-ARG2="/groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv"
-ARG3="/groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_mask.tif"
-ARG4="/groups/dennis/dennislab/dennise/github/cleared_brains/data/axial_allenCCF_25.tif"
-ARG5="/groups/dennis/dennislab/Imaging/raw_imaging_data/${1}/processed/bigstitcher/${1}_fused_12.tif"
+names=("2024-10-31_120153" "2024-10-31_124847" "2024-10-30_101304" "2024-10-30_130649" "2024-10-30_151222" "2024-10-30_155638" "2024-10-31_140929" "2024-10-31_151057" "2024-10-31_161023" "2024-10-31_165732" "2025-04-23_120857" "2025-04-23_111931" "2025-04-23_133149" "2025-04-23_141540" "2024-10-30_165104" "2024-10-31_092559" "2024-10-31_101956" "2024-10-31_110645" "2025-06-11_102241" "2025-06-11_105805" "2025-06-11_113824" "2025-06-11_122242" "2025-06-11_130428" "2025-06-11_134243" "2025-06-11_142104" "2025-07-28_114959" "2025-07-28_123702" "2025-07-28_095122" "2025-07-28_104614" "2025-08-11_083150" "2025-08-11_095231" "2025-07-29_092710" "2025-07-29_101224" "2025-07-29_110339" "2025-07-29_115032" "2025-07-29_124553" "2025-07-29_133309" "2025-08-08_171106" "2025-08-08_175709" "2025-08-08_110320" "2025-08-08_114940" "2025-08-13_133423" "2025-08-13_141929" "2025-08-08_124809" "2025-08-08_133543" "2025-07-28_133449" "2025-07-28_142157" "2025-08-07_171246" "2025-08-07_180051" "2024-11-18_123535")
+ANNVOL="/groups/dennis/dennislab/dennise/github/cleared_brains/data/ann_in_caroli.tif"
+ANNCSV="/groups/dennis/dennislab/dennise/github/cleared_brains/data/allen_anns-and-labels.csv"
+ANNMASK="/groups/dennis/dennislab/dennise/github/cleared_brains/data/caroli_ann-mask.tif"
 
-for ARGOPT in ${names[@]}; do
-ARG7="/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/output_axial_allenCCF_25_${ARGOPT}_fused-12"
-ARG8="/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt"
-echo $ARGOPT
-bsub -J "transformix_${ARGOPT}" -o "logs/transformix_${ARGOPT}.txt" -n 2 ./5_transformix_cells.sh $ARG7 $ARG8 $ARG4
-sleep 10s
-bwait -w "ended(transformix_${ARGOPT})"
-done
+#for ARGOPT in ${names[@]}; do
+#BRAIN="/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/${ARGOPT}_fused_12.tif"
+#OUTPUTFLD="/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/caroli_outputs"
+#TRANSFORMFLD="/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/caroli_elastix"
+#TXTFORTRANSFORMIX="/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/outputs/filtered_cells_for-transformix.txt"
+#echo $ARGOPT
+#bsub -J "transformix_${ARGOPT}" -o "logs/transformix_${ARGOPT}.txt" -n 2 ./5_transformix_cells.sh $TRANSFORMFLD $TXTFORTRANSFORMIX $ANNVOL $OUTPUTFLD
+#sleep 10s
+#bwait -w "ended(transformix_${ARGOPT})"
+#done
 
-echo "done with transformix"
+#echo "done with transformix"
 
 for ARGOPT in ${names[@]}; do
 echo ${ARGOPT}
-bsub -J "post_transformix_${ARGOPT}" -o "logs/posttransformix_${ARGOPT}.txt" -n 40 ./6_post_transformix.sh "/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/outputs" $ARG1 $ARG2 $ARG3
+OUTPUTFLD="/groups/dennis/dennislab/Imaging/raw_imaging_data/${ARGOPT}/processed/bigstitcher/caroli_outputs"
+bsub -J "post_transformix_${ARGOPT}" -o "logs/posttransformix_${ARGOPT}.txt" -n 40 ./6_post_transformix.sh $OUTPUTFLD $ANNVOL $ANNCSV $ANNMASK
 sleep 10s
 bwait -w "ended(post_transformix_${ARGOPT})"
 done
