@@ -1,152 +1,170 @@
-# PRA
+# cleared_brains
 
 ## Purpose
 The goals of this repo are:
-1. Allow others to replicate our lightsheet manuscript
-2. Allow non-Brody users to use and take advantage of these tools
-3. Allow Brody lab members easy access to the tools developed and implemented on Priniceton's HPC spock
+1. to build on PRA repo, which produced the 2024 Dennis et al manuscript
+2. include new tools and documentation as environments/processes evolve
+3. share with our collaborators and later the public as we produce manuscripts
 
 ## To use
 1. Clone this repo
-2. Generate the lightsheet environment
-   - in PRA, `conda env create -f environment.yaml`
-3. If not at Princeton, install Elastix
-    - see the end of this document for tips
+2. Make sure you have mamba (or conda if you prefer, if so, replace mamba with conda throughout)
+
+If you're not at Janelia, you'll need to make sure you have mamba or conda installed, e.g. with [miniconda](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh) and know that path, make sure to 
+
+At Janelia:
+- log in to login1 or login2
+- start an interactive node 
+  bsub -Is -W 04:00 -n 1 /bin/bash
+- install [miniconda](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh) 
+  - Janelia specific instructions can be found on the wiki [here](https://hhmi.atlassian.net/wiki/spaces/AL/pages/156205218/Data+processing+with+Python+on+the+Janelia+Compute+Cluster?atlOrigin=eyJpIjoiMjQ3ZTVkMGZmOGMxNGE0ZDhkNDVjZDUxODJiMDMzYmQiLCJwIjoiY29uZmx1ZW5jZS1jaGF0cy1pbnQifQ)
+- add to path (change /path/to/your/directory below to the actual path to your directory)
+export PATH="$PATH:/path/to/your/directory"
+- from the this repo:
+  mamba env create -f environment.yaml
+  conda activate clearedbrains
+- check path:
+  which python
+- it should say ~/miniforge3/envs/clearedbrains...
+
+3. Generate the environment
+  - in the repo folder, `mamba env create -f environment.yaml` this will create an environment called clearedbrains
+4. Decide if you'll use [ClearMap2](https://www.cellularimaging.org/blog/blog-post-title-one-28kxw) and [BigStitcher-Spark](https://github.com/JaneliaSciComp/BigStitcher-Spark?tab=readme-ov-file#install). If so, install those, you'll need the paths for the next steps!
+   - BigStitcher-Spark is what we use to take our multi-tile imaging, turn it into a .zarr file which we later turn into (giant) individual tiff files of each slice the whole brain. ClearMap2 just receives the tiffs created from this fused image.
+   - ClearMap2 is what we use for finding cell centers, like Arc and cFos. Several alternatives exist, like custom 3d UNets or BrainRender's cellfinder. If you use another tool to find cell centers and you want to use points transformix tools from here, you need to make sure your outputs have the same structure: a csv file with the headers ['x','y','z']. Else, you'll need to change the pre_transformix.py script to adjust to your data formats.
+ 
+cd $CLEARED_BRAINS_FLD
+cd src
+5. Update the src/config_file.sh file with all the relevant paths, commenting out anything you don't need as described in the file
+6. try running ./test_config.sh It should open a python instance. Type exit() and enter to leave python.
 
 ## Data
-Even our downsampled files are large, so we have deposited the main files you'll need at figshare here: https://figshare.com/articles/dataset/Princeton_RAtlas_PRA_/24207429
-If you require the raw data (which is hundreds of Gb to some Tb per brain) email the authors and we will get you connected to Princeton IT to get a Globus link for accessing those data.
+Even downsampled files are large, so we have deposited the main files can be found here:
+
+- rat data from the Princeton Ratlas (PRA) manuscript can be found [here](https://figshare.com/articles/dataset/Princeton_RAtlas_PRA_/24207429)
+- _Mus caroli_ files can be found [here](link)
 
 ## Acknowledgements
-This code builds heavily off of BrainPipe from Tom Pisano, Zahra Dahanerawala, and Austin Hoag. It also benefitted greatly from Nick Del Grosso and BrainGlobe.
+This code builds off of PRA, which built heavily off of BrainPipe from Tom Pisano, Zahra Dahanerawala, and Austin Hoag. It also benefitted greatly from Nick Del Grosso and BrainGlobe. Thanks also to Nishan Shettigar and Alison Comrie for suggestions to improve the code.
 
 ## Citations
-- Our protocol https://en.bio-protocol.org/en/bpdetail?id=4854&type=0 
-- BrainPipe https://github.com/PrincetonUniversity/BrainPipe
-- BrainRender https://www.biorxiv.org/content/10.1101/2020.02.23.961748v2
-- Pisano _et al_ 2022 https://www.sciencedirect.com/science/article/pii/S2666166722001691
+- Our [PRA protocol](https://en.bio-protocol.org/en/bpdetail?id=4854&type=0) for whole, cleared rat brains and alignments
+- [PRA](https://github.com/emilyjanedennis/PRA/)
+- [BrainPipe](https://github.com/PrincetonUniversity/BrainPipe)
+- [BrainRender](https://www.biorxiv.org/content/10.1101/2020.02.23.961748v2)
+- [Pisano _et al_ 2022](https://www.sciencedirect.com/science/article/pii/S2666166722001691)
 
-## *INSTALLATION INSTRUCTIONS*:
-* Note that this currently has only been tested on Linux (Ubuntu 16 and 18). SimpleElastix installation has also been tested in Windows 10 by Adrian.
-* If on a cluster - Elastix needs to be compiled on the cluster - this was challenging for IT here and suspect it will be for your IT as well. If at Princeton, elastix is on spock
-
-### Install simpleelastix
-*_For Windows_*, Follow the instructions on [read the docs](https://simpleelastix.readthedocs.io/GettingStarted.html#compiling-on-windows).
-Use the command line step (step 3) and skip the IDE steps 4 and 5.  If the Python wrapping fails, see this [known issue](https://github.com/SuperElastix/SimpleElastix/issues/243).
-
--------------
-_*To install elastix on linux*_, follow the instructions in the manual under the easy way, not the "super easy" way
-
-if you use the 'easy way' but have a modern computer, your gcc version may be too high. For this, you'll need at least ITK 5.0 which means you need to use elastix version 5, not 4.8. The following worked on Ubuntu 18 with two GeForce RTX 2070 SUPERs.
-
-- made two dirs: ITK-build and elastix-build
-- added ITKSNap 5
-  file:///tmp/mozilla_emilyjanedennis0/InsightSoftwareGuide-Book1-5.1.0.pdf
-  extracted downloaded .tar.gz and .tar.bz2 files to those directories
-  in ITK-build, typed  `cmake ITK-build`
-  then `sudo make install`
-  in elastix-build, `cmake elastix-build` failed, so I went into the folder and found the CMakeFiles.txt
-  `cd elastixfolder
-  nano CMakeLists.txt`
-  and added `list( APPEND CMAKE_PREFIX_PATH "/home/emilyjanedennis/Desktop/Apps/ITK-build/" )`
-
-  note: I had to remove line 76 from `elastix-5.0.0/Components/Resamplers/MyStandardResampler/elxMyStandardResampler` which referred to an  undefined type called PointType which was throwing an exception during the make install process for elastix
-
-[Download](https://github.com/abria/TeraStitcher/wiki/Binary-packages) TeraStitcher-installer. Move file to wherever you want Terastitcher to live, cd into that directory, and then:
-```
-$ bash TeraStitcher-Qt4-standalone-1.10.18-Linux
-```
-* Modify Path in ~/.bashrc:
-
-```
-export PATH="<path/to/software>/TeraStitcher-Qt4-standalone-1.10.18-Linux/bin:$PATH"
-```
-* Check to see if successful
-
-```
-$ which terastitcher
-```
-
-
-## Princeton-specific instructions
-If on the cluster, and typing which terastitcher can't find terastitcher, try adding the following to your path
-
-```
-export PATH="/usr/people/pnilsadmin/TeraStitcher-Qt4-standalone-1.10.11-Linux/bin$PATH"
-```
-
-### If on a local Ubuntu machine also install elastix (see section above), xvfb, Terastitcher:
-
-```
-$ sudo apt-get install xvfb
-```
-
-# Using raw lightsheet images to:
+# Using lightsheet images to:
 
 ### 1. Make a stitched, whole-brain
-#### If imaged on LaVision
-If there are errors in these steps, usually it's
-    1. regex needs to be edited
-    2. elastix isn't installed properly (try `which elastix`) or is missing from bashrc
-    3. terastitcher isn't installed properly (try `which terastitcher`) or is missing from bashrc
-**things to do before running**
-- in `src/utils/io.py`, edit point to the appropriate directories and use the correct parameters for your imaging. especially pay attention to:
-- line 125: systemdirectory
-  - if you haven't edited directorydeterminer() appropriately, nothing will work. If at Princeton and running on spock, you do not need to change anything.
+TODO: add Nishan's processing steps as command line code
 
-- in `src/utils/imageprocessing.py` point to the raw images file, they should be in the format like
-    `10-50-16_UltraII_raw_RawDataStack[00 x 00]_C00_xyz-Table Z0606_UltraII Filter0000.ome.tif`
-  - if the format of your images differs, you'll need to edit the regex expression in `utils/imageprocessing.py` under `def regex_determiner`, line 188. I found this https://www.dataquest.io/blog/regex-cheatsheet/ to be helpful.
+- use 1_fuse_volume.sh and provide a single input: a full path to the processed/bigstitcher folder created above. e.g.
+`./1_fuse_volume.sh "/path/to/brain/processed/bigstitcher`
 
-**to run**
-if you're on a local workstation, use
+We expect your files to be in the same format as ours: you should have a folder containing
+- a folder called interestpoints.n5
+- dataset.h5
+- dataset.xml
+- an output file ending in .tif, e.g. 2025-01-15_123328_fused_12.tif
 
-
-if on spock, *after editing run_tracing.py*, go to your rat_BrainPipe folder, and run
-    `sbatch slurm_scripts/step0.sh`
-then go to your outputdirectory (e.g. /scratch/ejdennis/e001) that you specified in run_tracing.py
-    `cd /scratch/ejdennis/e001`
-there should now be a directory called lightsheet, go there
-    `cd lightsheet`
-run the pipeline from this folder (this is useful because it allows you to keep track of the exact parameters you used to run, and also parallelize by launching jobs for different brains at once on the cluster)
-    `sbatch sub_registration.sh`
-
-That's all! If everything runs successfully, you'll end up with a param_dict.p, LogFile.txt, two new resized tiffstacks, a mostly empty folder called injections, a folder called full_sizedatafld with the individual stitched z planes for each channel, and an elastix folder with the brains warped to the atlas defined in run_tracing.py AtlasFile
+you may have additional dataset.xml files, e.g. 
+- dataset.xml~1
+- dataset.xml~2
+- dataset.xml~3
 
 ### 2. Make an atlas
-If you have a group of stitched brains (e.g. e001/full_sizedatafld, e002/full_sizedatafld, and e003/full_sizedatafld), you can make an average brain for an atlas. Our rat atlas is for our lab, and therefore is made of only male (defined operationally by external genitalia) brains. However, we wanted to test our results and publish including female (similarly operationally defined) brains. Therefore we perfused, cleared, and imaged four female brains and created an atlas.
 
-To make your own atlas, use the  `rat_atlas` folder.
-  1. Edit `mk_ls_atl.sh` amd `cmpl_atl.sh` to use your preferred slurm SBATCH headings
-  2. Edit `step1_make_atlas_from_lightsheet_images`
-    - edit sys.path.append in the import section to reference your rat_BrainPipe cloned git repo
-    - main section variables:
-      - src should be where your folders (typically named by animal name, e.g. e001) live, these folders should each have full_sizedatafld folders in them
-      - dst - where you want to save things. If you have a nested structure, make sure the parent structure exists (e.g.if you want to save in /jukebox/scratch/ejdennis/female_atlas/volumes, make sure /jukebox/scratch/ejdennis/female_atlas already exists)
-      - brains should be the list of names of the brains you wish to use, corresponding to the names of the folders in dst that you want to average
-  3. Run `sbatch --array=0-2 mk_ls_atl.sh` for three brains, --array=0-9 for 10 brains, etc.
-  4. Edit `step2_compie_atlas.py`
-    - edit sys.path.append in the import section to reference your rat_BrainPipe cloned git repo
-    - edit main section variables:
-      - src - should be the same as in step2
-      - brains - should be the same as in step2
-      - output_fld - should be a *different* folder than in step2: I like to place them in the same parent folder
-      - parameterfld - this should point to a folder containing the affine/bspline transforms you want to use
-  5. Run `sbatch --array=0-2 cmpl_atl.sh` for three brains, --array=0-9 for 10 brains, etc.
-  6. Edit `step3_make_median.py`
-    - edit the sys.path.append in the import section
-    - in main, edit variables to match step2_compile_atlas
-  7. Either locally or on the cluster head node (module load anacondapy/5.3.1), use export SLURM_ARRAY_TASK_ID=0, activate the lightsheet conda environment, and run `step3_make_median.py`
+#### General procedure
+- generally we use a strategy described in our [PRA protocol](https://en.bio-protocol.org/en/bpdetail?id=4854&type=0). Briefly:
+  1. we first align pairs of brains, then take a median of the aligned image (mv, for moving image) and the brain it was aligned to (fx, for fixed image), and continue until we get one average brain. This creates a "seed" image
+  2. Align all of the individual brains to the seed, take the median of the aligned brains+seed, and create a new seed, "seed1"
+  3. Repeat step 2, making "seed2"
+  4. Repeat step 2, making "seed3"
+  5. Repeat step 2, making a "pre_final" median
+  6. Open FIJI, open Plugins/Macros/Record and then then adjust the image in FIJI to be centered in all axes and have a similar amount of blank/black space around the brain volume.
+  7. Save the adjusted brain as your new CCF (e.g. "caroli.tif") and save the macro as a record of what manipulations were done (e.g. "caroli_prefinal-to-final.txt")
+
+  Please see the FIJI tips under Helpful Extras
+
+#### To run a paired alignment (step 1) use
+`./atlas_elastix.sh MV_VOL FX_VOL OUTPUT_DIR`
+where MV_VOL is a full path to your moving volume, the image you want to align to the fixed volume e.g.
+`./atlas_elastix.sh /path/to/folder/male1.tif /path/to/folder/female1.tif /path/to/output/folder`
+
+#### To make a median of two or more brains (they MUST be the same shape) e.g. the end of step 1-5 after alignments complete
+`./atlas_median.sh LIST_OF_BRAINS OUTPUT_DIR` and optionally `OUTPUT_TIF` where LIST_OF_BRAINS is a parenthetical contatining full paths to the images you'd like to take a median of... take care to make sure you're using the alignment OUTPUT from mv->fx in step 1 and the fx from step 1, e.g. ("path/to/brain1_in-brain2-space.tif" "path/to/brain2.tif"), OUTPUT_DIR is a full path to a directory where you'd like the median to be stored, and you can optionally provide the full path of the tiff file you'd like to save. e.g.
+`./atlas_median.sh ("/path/to/brain1_in_seed1_space.tif" "/path/to/brain2_in_seed1_space.tif" "/path/to/brain3_in_seed1_space.tif" "/path/to/brain4_in_seed1_space.tif") "/path/to/output/fld" "/path/to/output/fld/seed2.tif"`
 
 ### 3. Put a brain in atlas space
-- run general_elastix.sh example: `sbatch general_elastix.sh "/jukebox/brody/lightsheet/elastix_params/" "['/jukebox/brody/lightsheet/volumes/brain.tif']" "/jukebox/brody/lightsheet/atlasdir/PRA.tif" "/scratch/ejdennis/lightsheet" "1.4"` this will align brain.tif to PRA.tif using the parameter files in elastix_params and a multiplication value of 1.4. 1.4 means that the moving image (WHS_masked_atlas.tif) will be resized to 140% the size of the fixed image. This empirically works well for getting good alignments without too much fuss. Outputs will be saved in /scratch/ejdennis/lightsheet/brain_to_PRA
-   4. check the alignment! If you have issues, try changing the WHS_masked_atlas.tif file (more cropping or changing intensity/depth of pixels, etc.) Read more in Elastix documentation. Usually this just works.
+- align your brain to the atlas CCF using 0_elastix_run.sh:
+`./0_elastix_run.sh MV_VOL FX_VOL OUTPUT_DIR` where MV_VOL is the brain volume, FX_VOL is the CCF you want to align your brain to, OUTPUT_DIR is where you'd like the Transform files to be saved to 
+`./0_elastix_run.sh /path/to/mybrain.tif /path/to/CCF.tif /path/to/output/dir`
+- To evaluate the outcome, see FIJI tips below in "Helpful Extras" for viewing outputs. Briefly, open the CCF and the tif created in the output dir, e.g. /path/to/output/dir/mybrain_in_CCF.tif and use Image/Color/Merge Channels and select both the CCF.tif and mybrain_in_CCF.tif You may want to use Image/Adjust/Brightness/Contrast to adjust the brightness of each image. They should be overlaid and well-aligned. You can also open an annotation file for your CCF in this way and see the labels on your brain.
 
-### 4. Put a third-party atlas/annotation into your atlas space (assuming PRA.tif for this description, and assuming you're using the Princeton cluster for examples, so edit files/paths accordingly for your system)
-   0. Prep the files: you'll need an atlas file and an annotations file (atlas = looks like a brain, annotations = has a brain shape but has large chunks of it are different values, corresponding to brain regions). There also should be a labels file, usually a json or csv that tells you what the values in the annotations file mean. (e.g. value 10=olfactory bulb). Make sure the atlas and annotation files have these properties: (a) they are sagittally sectioned (b) have a black background (c) have approximately the same 'empty space' as your atlas (e.g. you don't want a huge amount of black/0s behind the spinal cord/cerebellum if that's not in your atlas space). and (d) mask any features not in your atlas. For example, for Waxholm Space Atlas (WHS) I used ImageJ BioFormat Importer to import the .nii files, reslice and transform to sagittal (with dorsal cortex on left) and crop. I did this for the annotations while recording a macro then applied that macro to the atlas file so they were treated identically, and then saved them as tiffs. I then used python to load the new sagittal annotation tif, set several values to 0 (like optic nerve, cochlea, etc that are not in our lightsheet-based PRA atlas) and saved out as WHS_masked_annotations.tif I then set all non-zero values to 1, and saved this as WHS_mask.tif. I then loaded the new sagittal atlas tiff, multiplied it by the WHS_mask, and saved as WHS_masked_atlas.tif.
-   2. Make sure you have this repo cloned, and cd into PRA/src
-   3. run general_elastix.sh example: `sbatch general_elastix.sh "/jukebox/brody/lightsheet/elastix_params/" "['/jukebox/brody/lightsheet/volumes/WHS_masked_atlas.tif']" "/jukebox/brody/lightsheet/atlasdir/PRA.tif" "/scratch/ejdennis/lightsheet" "1.4"` this will align WHS_masked_atlas.tif to PRA.tif using the parameter files in elastix_params and a multiplication value of 1.4. 1.4 means that the moving image (WHS_masked_atlas.tif) will be resized to 140% the size of the fixed image. This empirically works well for getting good alignments without too much fuss. Outputs will be saved in /scratch/ejdennis/lightsheet/WHS_masked_atlas_to_PRA
-   4. check the alignment! If you have issues, try changing the WHS_masked_atlas.tif file (more cropping or changing intensity/depth of pixels, etc.) Read more in Elastix documentation. Usually this just works.
-   5. run general_transformix.sh example: `sbatch general_transformix.sh "/jukebox/brody/lightsheet/volumes/WHS_masked_atlas_to_fPRA" "/jukebox/brody/lightsheet/atlasdir/fPRA.tif" "/jukebox/brody/lightsheet/volumes/WHS_masked_annotations.tif" "/scratch/ejdennis/lightsheet/WHS_$` this will use the Transform files in WHS_masked_atlas_to_PRA to transform WHS_masked_annotations.tif into PRA space
-   6. check the alignment! If you have issues, make sure the resize/mult value is correct (checking the shape of resized.tif is a good first step, if mult = 1.4 (the default) then all axes should be 1.4x the atlas in all dimensions, and the same as the enlarged tiff created in step 3)
+### 4. Use Transformix
 
+#### 4.1 Transform an image
+After running elastix with brainA.tif (mv) to CCF.tif (fx), you can use these TransformParameters files and apply the exact same transformation on any image of the same size as your mv. The most common use case is for visualizing the alignment process by applying the same transformation to a 'grid' volume and showing how the image was warped. 
+
+To do this use
+`./X_transformix_images.sh TRANSFORMS_FLD MV_VOL OUTPUT_FILE` where the TRANSFORMS_FLD is the folder produced by elastix aligning your mv to your fx volume, MV_VOL is the new image/volume that you want to apply the transforms to. This MUST be the exact same dimensions as the image used for elastix. OUTPUT_FILE is where you'd like the new image saved.
+e.g. if you ran 
+`./0_elastix_run.sh /path/to/brainA.tif /path/to/CCF.tif /path/to/output_dir` 
+and the dimensions of brainA.tif are (100,300,200). You make a volume that is just a 3d grid (/path/to/grid.tif) and has dimensions of (100,300,200), and want to visualize how 'wavy' the grid looks. Run:
+`./X_transformix_images.sh /path/to/output_dir /path/to/grid.tif /path/to/output/grid_in_CCF.tif`
+
+
+#### 4.2 Transform a set of points
+Remember, transformix for points is "backwards"... to get points from your volume into a CCF, you should be using TransformParameter files made by using elastix to align the CCF (mv) _*to*_ your volume (fx) with points/cells. The [elastix manual](https://www2.imm.dtu.dk/courses/02503/docs/elastix-5.2.0-manual.pdf) is very useful for understanding this! 
+
+e.g. If you ran 
+`./0_elastix_run.sh /path/to/CCF.tif /path/to/brainA.tif /path/to/transforms_output_dir` NOTE THE DIFFERENCE FROM 5.1's EXAMPLE
+and you have points in brainA.tif coordinates that you want in CCF.tif coordinates, run:
+`./5_transformix_cells.sh TRANSFORMS_FLD TXT_FILE MV_VOL OUTPUT_DIR` for example
+`./5_transformix_cells.sh /path/to/transforms_output_dir /path/to/filtered_cells_for-transformix.txt /path/to/brainA.tif /path/to/cells_output_dir`
+
+- if you produced a csv of points called filtered_cells.csv with heading (z,y,x), you'll also need to run 
+`pre_transformix.py DIRECTORY_WITH_CSV` where DIRECTORY_WITH_CSV is the directory containing filtered_cells.csv
+
+  points formatted for transformix in a .txt file:
+      point  
+      134682  
+      3 3 29
+      4 3 34
+      5 3 48
+      6 3 51
+      8 3 48
+
+# TODO DOUBLE CHECK THE ORDER IS ZYX
+  same file as a csv:
+      ,z,y,x
+      0,3,3,29
+      1,4,3,34
+      2,5,3,48
+      3,6,3,51
+
+
+### 5. Put a third-party atlas/annotation into your CCF (Common Coordinate Framework) 
+- align the third-party CCF to your CCF (see 3. Put a brain in atlas space, above) e.g.
+`./0_elastix_run.sh /path/to/third-party-CCF.tif /path/to/yourCCF.tif /path/to/output/thirdparty_in_yourCCF`
+- transform the annotation into your CCF using the elastix output (TransformParameters), see (4.1 Transform an image above)
+`./`
+
+### 6. Do all the things: Start with BigStitcher's output, run ClearMap2, and get the cells in CCF (allen atlas) space:
+- **SIMPLEST IF AT JANELIA**: 
+  - update runbybasename.sh line 8 to fit your data path structure
+  - make sure all lines are un-commented in superscript_all.sh and then 
+  - cd into cleared_brains/src
+  - run:
+`./runbybasename.sh "2025-01-01_11111"`
+
+- ELSEWHERE: 
+  - Elastix (step 0) must _finish_ before transformix can run, otherwise all steps go in numerical order (1, 2, 3_1, 3_2, 3_3, 4, 5, 6). You can use the superscript_all.sh as a guide, and run commands in that order with those inputs on your local machine or cluster, adjusted for your scheduler and paths.
+
+# Helpful Extras
+- [FIJI (FIJI Is Just ImageJ)](https://imagej.net/software/fiji/) is an excellent, open source software to view brain volumes quickly and easily.
+  - [here](https://imagej.net/ij/docs/pdfs/ImageJ.pdf) is a great starter guide for all things ImageJ/FIJI
+  - [here](https://www.youtube.com/watch?v=FiwjjbBjNy8) is a video showing a particularly usefl feature: if you have an aligned brain and a CCF or annotation volume, you can see them both in the same stack by following this tutorial. This is particularly useful for seeing probe tracks and identifying brain regions
+  - many users find the segmented line tool particularly useful, or the [Fitline plugin](https://forum.image.sc/t/draw-a-best-fit-line-based-on-multi-point-selection/911)
+- [BrainGlobe](https://brainglobe.info/index.html) has lots of great methods in python for these types of data. The PRA (Princeton Rat Atlas) is available in BrainGlobe, for example.
