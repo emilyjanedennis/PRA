@@ -23,7 +23,7 @@ if __name__ == "__main__":
 		os.mkdir(os.path.join(sys.argv[1],'outputs'))
 		print('no outputs folder found, making one')
 	fld=sys.argv[1]
-
+	
 	file = "filtered_cells.csv"
 	try:
 		stitched = np.load(os.path.join(fld,'tiffs','stitched.npy'), mmap_mode='r')
