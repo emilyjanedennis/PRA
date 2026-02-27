@@ -42,7 +42,9 @@ if __name__ == "__main__":
   import numpy as np
   import numpy.lib.recfunctions as rfn
   from datetime import datetime
-  sys.path.append('/groups/dennis/dennislab/dennise/github/ClearMap2')
+  current_file_path=os.path.realpath(__file__)
+  path_to_add=os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))
+  sys.path.append(path_to_add)
   from ClearMap.Environment import *  #analysis:ignore
 
   if len(sys.argv) == 2:
